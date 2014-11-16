@@ -1,0 +1,44 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+#container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+#surface {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+circle {
+    fill: whitesmoke;
+    stroke: black;
+}
+
+circle:hover {
+    fill: rgb(133, 181, 199);
+}
+
+line {
+    stroke: black;
+}
+
+path {
+    fill: none;
+    stroke: black;
+}
+
+rect {
+    fill: whitesmoke;
+    stroke: black;
+}
