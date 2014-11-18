@@ -198,7 +198,12 @@
                         isApex = true;
                     }
 
-                    node = new TreeNode({ _id: root.id, _pid: root.pid, depth: depth });
+                    node = new TreeNode({
+                        _id: root.id,
+                        _pid: root.pid,
+                        depth: depth
+                    });
+
                     if (isApex) {
                         self.apexNode = node;
                     }
