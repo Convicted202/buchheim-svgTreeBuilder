@@ -15,8 +15,54 @@
             return target;
         },
 
+        getRandomInt: function(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        },
+
+        generateJson: function(depth, maxChild) {
+            var jsonObj = {},
+                self = this;
+            depth = 3;//this.getRandomInt(1, depth);
+            maxChild = 3;//maxChild || 10;
+            jsonObj = {
+                id: 'root',
+                children: []
+            };
+
+            function createChildren(root, depth) {
+                var childrenCount = self.getRandomInt(0, maxChild),
+                    child, i;
+
+                depth--;
+
+                for (i = childrenCount; i >= 0; i--) {
+                    child = {
+                        id: self.generateGuid(),
+                        pid: root.id,
+                        children: []
+                    };
+                    //console.log(child.id, root.id);
+                    root.children.push(child);
+                    if (depth > 0) {
+                        createChildren(child, depth);
+                    }
+                }
+            }
+
+            createChildren(jsonObj, depth);
+            return jsonObj;
+        },
+
         generateGuid: function() {
-            return 1;
+            function s4() {
+                return Math.floor((1 + Math.random()) * 0x10000)
+                       .toString(16)
+                       .substring(1);
+            }
+
+            return  s4() + s4() + '-' +
+                    s4() + '-' + s4() + '-' +
+                    s4() + '-' + s4() + s4() + s4();
         }
     }
 
@@ -135,9 +181,8 @@
         }
     }
 
-
-    var FaultTree = function(jsonStruct, snap, surfaceId, configs) {
-        this.jsonTree = jsonStruct || {};
+    var FaultTree = function(snap, surfaceId, configs) {
+        this.jsonTree = {};
         this.nodesCollection = [];
 
         this.snap = snap;
@@ -156,9 +201,17 @@
     };
 
     FaultTree.prototype = {
-        init: function() {
+        init: function(data) {
+            if (!data) {
+                data = Helpers.generateJson(100, 5);
+            }
+            this.jsonTree = data;
             this.treeLayout();
             this.initHandlers();
+        },
+
+        getJsonTree: function() {
+            return JSON.stringify(this.jsonTree);
         },
 
         initNodes: function() {
