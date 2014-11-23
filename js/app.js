@@ -1,7 +1,7 @@
 window.addEventListener('load', function() {
 
     var req = new XMLHttpRequest(),
-        dataUrl = 'js/default2-data.json',
+        dataUrl = 'js/default3-data.json',
         data;
 
     req.open("GET", dataUrl, true);
@@ -9,8 +9,8 @@ window.addEventListener('load', function() {
     req.onreadystatechange = function ()
     {
         try {
-            if (req.readyState == 4) {
-                if (req.status == 200) {
+            if (req.readyState === 4) {
+                if (req.status === 200) {
                     data = req.responseText;
                     applicationStart(JSON.parse(data));
                 } else {
@@ -33,6 +33,6 @@ window.addEventListener('load', function() {
 
 function applicationStart(data) {
     window.tree = new FaultTree(Snap, 'surface');
-    tree.init();
+    tree.init(data);
     window.json = tree.getJsonTree();
 }

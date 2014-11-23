@@ -118,7 +118,7 @@
         },
 
         getSiblings: function() {
-            var arr = Array.prototype.slice.call(this.nodeParent.nodeChildren, 0);
+            var arr = Array.prototype.slice.call(this.nodeParent.nodeChildren, 0),
                 i = 0, n = this.nodeParent.nodeChildren.length;
 
             for (; i < n; i++) {
@@ -323,20 +323,31 @@
             });
         },
 
+        logNodesBy: function(configsArray) {
+            console.log('=============== Logging Start ===============');
+            Array.prototype.forEach.call(this.nodesCollection, function(node) {
+                var props = Array.prototype.map.call(configsArray, function(config) {
+                    return node[config];
+                });
+                console.log(node._id, props.join(' '));
+            });
+            console.log('================ Logging End ================');
+        },
+
         treeLayout: function() {
             var root = this;
 
             this.initNodes();
 
-            Array.prototype.forEach.call(root.nodesCollection, function(node) {
-                node.mod = 0;
-                node.thread = 0;
-                node.ancestor = node;
-            });
+            //Array.prototype.forEach.call(root.nodesCollection, function(node) {
+                //node.mod = 0;
+                //node.thread = 0;
+                //node.ancestor = node;
+            //});
 
             this.firstWalk(this.apexNode, 1);
             this.secondWalk(this.apexNode, -this.apexNode.prelim);
-
+            this.logNodesBy(['x', 'prelim']);
             this.drawAllNodes();
         },
 
@@ -426,7 +437,6 @@
                     som += vom.mod;
                     sop += vop.mod;
                 }
-
                 if (vim.nextRight() && !vop.nextRight()) {
                     vop.thread = vim.nextRight();
                     vop.mod += sim - sop;
@@ -457,10 +467,9 @@
 
         executeShifts: function(node) {
             var shift = 0, change = 0,
-                child = null,
-                i, n;
+                child = null, i;
 
-            for (i = 0, n = node.getChildrenCount(); i < n; i++) {
+            for (i = node.getChildrenCount() - 1; i >= 0; i--) {
                 child = node.getChild(i);
                 child.prelim += shift;
                 child.mod += shift;
@@ -472,10 +481,11 @@
         ancestor: function(vim, v, defaultAncestor) {
             var sibling,
                 pNode = v.nodeParent,
+                ancestors = v.getSiblings(),
                 i, n;
 
-            for (i = 0, n = pNode.getChildrenCount(); i < n; i++) {
-                if (vim.ancestor == pNode.nodeChildren[i]) {
+            for (i = 0, n = ancestors.length; i < n; i++) {
+                if (vim.ancestor == ancestors[i]) {
                     return vim.ancestor;
                 }
             }
@@ -499,7 +509,7 @@
 
             Array.prototype.forEach.call(self.nodesCollection, function(node) {
                 self.drawLogicInput(x + node.x * k, y + node.depth * 50, node._id);
-                self.surface.text(x + node.x * k - 5, y + node.depth * 50 + 5, node._id);
+                self.surface.text(x + node.x * k - 5, y + node.depth * 50 + 5, node.x);
             });
 
             function drawConnections(root, depth) {
