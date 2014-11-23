@@ -1,7 +1,7 @@
 window.addEventListener('load', function() {
 
     var req = new XMLHttpRequest(),
-        dataUrl = 'js/default3-data.json',
+        dataUrl = 'js/default4-data.json',
         data;
 
     req.open("GET", dataUrl, true);

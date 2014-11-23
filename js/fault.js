@@ -22,8 +22,7 @@
         generateJson: function(depth, maxChild) {
             var jsonObj = {},
                 self = this;
-            depth = 3;//this.getRandomInt(1, depth);
-            maxChild = 3;//maxChild || 10;
+
             jsonObj = {
                 id: 'root',
                 children: []
@@ -190,9 +189,9 @@
         this.config = {
              siblingSeparation : 40,
              treeTop: 80,
-             treeLeft: 500,
-             logicInputRadius: 15,
-             r: 30,
+             treeLeft: 950,
+             logicInputRadius: 5,
+             r: 10,
         }
 
         this.apexNode = null;
@@ -203,7 +202,7 @@
     FaultTree.prototype = {
         init: function(data) {
             if (!data) {
-                data = Helpers.generateJson(100, 5);
+                data = Helpers.generateJson(5, 2);
             }
             this.jsonTree = data;
             this.treeLayout();
@@ -339,15 +338,9 @@
 
             this.initNodes();
 
-            //Array.prototype.forEach.call(root.nodesCollection, function(node) {
-                //node.mod = 0;
-                //node.thread = 0;
-                //node.ancestor = node;
-            //});
-
             this.firstWalk(this.apexNode, 1);
             this.secondWalk(this.apexNode, -this.apexNode.prelim);
-            this.logNodesBy(['x', 'prelim']);
+            //this.logNodesBy(['x', 'prelim']);
             this.drawAllNodes();
         },
 
@@ -509,7 +502,7 @@
 
             Array.prototype.forEach.call(self.nodesCollection, function(node) {
                 self.drawLogicInput(x + node.x * k, y + node.depth * 50, node._id);
-                self.surface.text(x + node.x * k - 5, y + node.depth * 50 + 5, node.x);
+                // self.surface.text(x + node.x * k - 5, y + node.depth * 50 + 5, node.x);
             });
 
             function drawConnections(root, depth) {
