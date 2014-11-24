@@ -286,6 +286,11 @@
     };
 
     FaultTree.prototype = {
+        /**
+          * @desc applies json data, runs algorithm and initializes svg handlers
+          * @param obj data - JSON data to be processed; authomatically generated if not provided
+          * @return void
+        */
         init: function(data) {
             if (!data) {
                 data = Helpers.generateJson(5, 2);
@@ -295,10 +300,18 @@
             this.initHandlers();
         },
 
+        /**
+          * @desc retuns working tree in JSON to String
+          * @return string
+        */
         getJsonTree: function() {
             return JSON.stringify(this.jsonTree);
         },
 
+        /**
+          * @desc creates TreeNode collection based on provided JSON
+          * @return void
+        */
         initNodes: function() {
             var json = this.jsonTree,
                 self = this,
@@ -370,6 +383,10 @@
             loop(json);
         },
 
+        /**
+          * @desc initializes all major svg handlers
+          * @return void
+        */
         initHandlers: function() {
             var self = this,
                 receiver = null;
@@ -408,6 +425,11 @@
             });
         },
 
+        /**
+          * @desc logs all nodes properties specified by provided config array
+          * @param string[] configsArray - array of properties
+          * @return void
+        */
         logNodesBy: function(configsArray) {
             console.log('=============== Logging Start ===============');
             Array.prototype.forEach.call(this.nodesCollection, function(node) {
@@ -419,6 +441,10 @@
             console.log('================ Logging End ================');
         },
 
+        /**
+          * @desc initializes all nodes, runs algorithm, draws all nodes
+          * @return void
+        */
         treeLayout: function() {
             var root = this;
 
@@ -430,6 +456,12 @@
             this.drawAllNodes();
         },
 
+        /**
+          * @desc post-order traversal of algorithm
+          * @param TreeNode node - node as a root of a current subtree
+          * @param int distance - distance between two nodes; use 1 for best practice
+          * @return void
+        */
         firstWalk: function (node, distance) {
             var defaultAncestor = null,
                 child = null, leftSibling = null,
@@ -465,6 +497,12 @@
             }
         },
 
+        /**
+          * @desc contour traversal, summing modifiers for each node
+          * @param TreeNode node - currently processed node
+          * @param double m - current node's precision
+          * @return void
+        */
         secondWalk: function(node, m) {
             var child = null,
                 i, n;
@@ -478,6 +516,13 @@
             }
         },
 
+        /**
+          * @desc moves current subtree with node as a root if some nodes are conflicting in space
+          * @param TreeNode node - node as a root of current subtree
+          * @param TreeNode defaultAncestor - default node's ancestor
+          * @param int distance - distance of between-the-nodes spacing; 1 as best practice
+          * @return TreeNode - new default ancestor based on intersection
+        */
         apportion: function(node, defaultAncestor, distance) {
             var leftSibling = node.getLeftSibling(),
                 v, w, shift,
@@ -531,6 +576,13 @@
             return defaultAncestor;
         },
 
+        /**
+          * @desc moving subtree if needed; figured out in apportion
+          * @param TreeNode wm - left uncommon ancestor
+          * @param TreeNode wp - right uncommon ancestor
+          * @param double shift - space to shift wp to the right; calculated in apportion
+          * @return void
+        */
         moveSubtree: function(wm, wp, shift) {
             var subtrees = 0,
                 ratio = 0;
@@ -544,6 +596,11 @@
             wp.mod += shift;
         },
 
+        /**
+          * @desc moves children nodes if modeSubtree was called
+          * @param TreeNode node - root node of current subtree
+          * @return void
+        */
         executeShifts: function(node) {
             var shift = 0, change = 0,
                 child = null, i;
@@ -557,6 +614,13 @@
             }
         },
 
+        /**
+          * @desc finds the second uncommon ancestor assuming that first one is v
+          * @param TreeNode vim - left sibling, ancestor of which is searching
+          * @param TreeNode v - right uncommon ancestor
+          * @param TreeNode defaultAncestor - very left sibling of v
+          * @return TreeNode - new uncommon ancestor
+        */
         ancestor: function(vim, v, defaultAncestor) {
             var sibling,
                 pNode = v.nodeParent,
