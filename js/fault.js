@@ -3,6 +3,12 @@
     'use strict'
 
     var Helpers = {
+        /**
+          * @desc extends target object with source object
+          * @param object target - object to be extended
+          * @param object source - extension object
+          * @return object - extended target object
+        */
         extend: function (target, source) {
             target = target || {};
             for (var prop in source) {
@@ -15,10 +21,28 @@
             return target;
         },
 
+        /**
+          * @desc generates random integer from the range
+          * @param int min - minimum number of the range; equals 0 if not provided
+          * @param int max - maximum number of the range
+          * @return int - integer from the range; 0 if min and max not provided
+        */
         getRandomInt: function(min, max) {
+            if (!arguments.length) {
+                return 0;
+            }
+            if (arguments.length === 1) {
+                min = 0;
+            }
             return Math.floor(Math.random() * (max - min + 1)) + min;
         },
 
+        /**
+          * @desc generates random JSON structure
+          * @param int depth - depth of JSON tree
+          * @param int maxChild - maximum sibling amount on each level
+          * @return object - random JSON object
+        */
         generateJson: function(depth, maxChild) {
             var jsonObj = {},
                 self = this;
@@ -52,6 +76,10 @@
             return jsonObj;
         },
 
+        /**
+          * @desc generates GUID in format '[8]-[4]-[4]-[4]-[12]'
+          * @return string - generated GUID
+        */
         generateGuid: function() {
             function s4() {
                 return Math.floor((1 + Math.random()) * 0x10000)
@@ -89,10 +117,19 @@
     }
 
     TreeNode.prototype = {
+        /**
+          * @desc adds child to nodeChildren collection
+          * @param TreeNode node - node to push
+          * @return void
+        */
         addChild: function(node) {
             this.nodeChildren.push(node);
         },
 
+        /**
+          * @desc returns left sibling of current node
+          * @return TreeNode
+        */
         getLeftSibling: function() {
             if (this.number !== 0) {
                 return this.nodeParent.nodeChildren[this.number - 1];
@@ -100,6 +137,10 @@
             return null;
         },
 
+        /**
+          * @desc returns right sibling of current node
+          * @return TreeNode
+        */
         getRightSibling: function() {
             var pNode = this.nodeParent;
 
@@ -109,6 +150,10 @@
             return null;
         },
 
+        /**
+          * @desc returns the very left sibling on the same level with current node
+          * @return TreeNode
+        */
         getLefmostSibling: function() {
             if (this.number !== 0) {
                 return this.nodeParent.nodeChildren[0];
@@ -116,6 +161,10 @@
             return null;
         },
 
+        /**
+          * @desc returns the list of siblings of current node
+          * @return array
+        */
         getSiblings: function() {
             var arr = Array.prototype.slice.call(this.nodeParent.nodeChildren, 0),
                 i = 0, n = this.nodeParent.nodeChildren.length;
@@ -130,30 +179,59 @@
             return arr;
         },
 
+        /**
+          * @desc returns length of children
+          * @return int
+        */
         getChildrenCount: function() {
             return this.nodeChildren ? this.nodeChildren.length : 0;
         },
 
+        /**
+          * @desc returns node on k-th position
+          * @param int k - position of node to return
+          * @return TreeNode
+        */
         getChild: function(k) {
             return this.nodeChildren && this.nodeChildren[k];
         },
 
+        /**
+          * @desc returns the very left child of current node
+          * @return TreeNode
+        */
         getFirstChild: function() {
             return this.getChild(0);
         },
 
+        /**
+          * @desc returns the very last child of current node
+          * @return TreeNode
+        */
         getLastChild: function() {
             return this.getChild(this.getChildrenCount() - 1);
         },
 
+        /**
+          * @desc returns the very left child of current node
+          * @return TreeNode
+        */
         getLeftmostChild: function() {
             return this.getFirstChild();
         },
 
+        /**
+          * @desc returns the very last child of current node
+          * @return TreeNode
+        */
         getRightmostChild: function() {
             return this.getLastChild();
         },
 
+        /**
+          * @desc returns the center of children position
+          * @return int
+        */
         getChildrenCenter: function() {
             var leftmost = this.getFirstChild(),
                 rightmost = this.getLastChild();
@@ -161,6 +239,10 @@
             return (leftmost.prelim + rightmost.prelim) / 2;
         },
 
+        /**
+          * @desc returns the very first child or thread if node is a leaf
+          * @return TreeNode
+        */
         nextLeft: function() {
             if (this.getChildrenCount()) {
                 return this.getLeftmostChild();
@@ -168,6 +250,10 @@
             return this.thread;
         },
 
+        /**
+          * @desc returns the very last child or thread if node is a leaf
+          * @return TreeNode
+        */
         nextRight: function() {
             if (this.getChildrenCount()) {
                 return this.getRightmostChild();

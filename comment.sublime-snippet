@@ -1,0 +1,11 @@
+<snippet>
+    <content><![CDATA[
+/**
+  * @desc ${1:#description}
+  * @param ${2:#type} ${3:#name} - ${4:#description}
+  * @return ${5:#type} - ${6:#description}
+*/
+]]></content>
+    <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+    <tabTrigger>///</tabTrigger>
+</snippet>
