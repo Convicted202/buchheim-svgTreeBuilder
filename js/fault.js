@@ -93,6 +93,13 @@
         }
     }
 
+    var ConnectionType = {
+        STRAIGHT: 0,
+        BEZIER: 1,
+        POLYGONAL: 2
+    }
+
+
     var TreeNode = function(configs) {
         this._id = 0;
         this._pid = 0;
@@ -648,25 +655,29 @@
                 svg = self.surface.paper, path, cmd = [];
             self.surface.paper.clear();
 
-            drawConnections(this.apexNode, 0);
+            drawConnections(this.apexNode, 0, ConnectionType.STRAIGHT);
 
             Array.prototype.forEach.call(self.nodesCollection, function(node) {
                 self.drawLogicInput(x + node.x * k, y + node.depth * 50, node._id);
                 // self.surface.text(x + node.x * k - 5, y + node.depth * 50 + 5, node.x);
             });
 
-            function drawConnections(root, depth) {
+            function drawConnections(root, depth, conType) {
                 Array.prototype.forEach.call(root.nodeChildren, function(node) {
                     if (node) {
-                        path = svg.path();
-                        cmd.push('M' + (x + root.x * k) + ',' + (y + depth * 50));
-                        cmd.push('C' + (x + root.x * k) + ',' + (y + (depth + 1) * 50));
-                        cmd.push((x + node.x * k) + ',' + (y + depth * 50 + 25));
-                        cmd.push((x + node.x * k) + ',' + (y + (depth + 1) * 50));
-                        path.node.setAttribute('d', cmd.join(' '));
-                        cmd = [];
-                        //self.snap.paper.line(x + root.x * k, y + depth * 50, x + node.x * k, y + (depth + 1) * 50);
-                        drawConnections(node, depth + 1);
+                        if (conType === ConnectionType.BEZIER) {
+                            path = svg.path();
+                            cmd.push('M' + (x + root.x * k) + ',' + (y + depth * 50));
+                            cmd.push('C' + (x + root.x * k) + ',' + (y + (depth + 1) * 50));
+                            cmd.push((x + node.x * k) + ',' + (y + depth * 50 + 25));
+                            cmd.push((x + node.x * k) + ',' + (y + (depth + 1) * 50));
+                            path.node.setAttribute('d', cmd.join(' '));
+                            cmd = [];
+                        } else if (conType === ConnectionType.STRAIGHT) {
+                            svg.line(x + root.x * k, y + depth * 50, x + node.x * k, y + (depth + 1) * 50);
+                        }
+
+                        drawConnections(node, depth + 1, conType);
                     }
                 });
             }
