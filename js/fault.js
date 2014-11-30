@@ -100,7 +100,7 @@
           * @param object element - optinally provided element to make accessible in animation loop
           * @return void
         */
-        this.animate = function animLoop( render, element ) {
+        animate: function( render, element ) {
             var running, lastFrame = +new Date;
 
             // main cycle
@@ -127,10 +127,12 @@
         POLYGONAL: 2
     }
 
-
     var TreeNode = function(configs) {
         this._id = 0;
         this._pid = 0;
+
+        this.logicInputRadius = 5;
+        this.surface = null;
 
         this.guid = Helpers.generateGuid();
 
@@ -138,6 +140,15 @@
 
         this.x = 0;
         this.y = 0;
+
+        // this.begX = 0;
+        // this.begY = 0;
+
+        // this.currentX = 0;
+        // this.currentY = 0;
+
+        this.addToX = null;
+
         this.prelim = 0;
         this.nodeParent = null;
         this.nodeChildren = [];
@@ -296,8 +307,46 @@
             return this.thread;
         },
 
-        drawNode: function() {
+        attachSurface: function(surface) {
+            this.surface = surface;
+        },
 
+        checkAddToY: function() {
+            if (this.y - this.begY > this.x - this.begX) {
+                this.addToX = 1;
+            } else {
+                this.addToX = -1;
+            }
+        },
+
+        draw: function(x, y, w, h, r) {
+            // if (!this.surface) {
+            //     return false;
+            // }
+            // if (!this)
+            // if (!this.begX && !this.begY) {
+
+                //this.surface.circle(x, y, r).attr({id: this._id});
+                this.surface.rect(x, y, w, h, r, r);
+            //     return false;
+            // }
+            // if (!this.addToX) {
+            //     this.checkAddToY();
+            // }
+            // if (this.addToX + 1) {
+            //     if (this.y - this.begY < 0.001) {
+            //         return false;
+            //     }
+            //     this.currentX = (this.currentY - this.begY) * (this.x - this.begX) / (this.y - this.begY) + this.begX;
+            //     this.begX = this.currentX;
+            //     return true;
+            // } else {
+            //     if (this.x - this.begX < 0.001) {
+            //         return false;
+            //     }
+            //     this.currentY = (this.currentX - this.begX) * (this.y - this.begY) / (this.x - this.begX) + this.begY;
+            //     this.begY = this.currentY;
+            // }
         }
     }
 
@@ -311,8 +360,15 @@
              siblingSeparation : 40,
              treeTop: 80,
              treeLeft: 950,
-             logicInputRadius: 5,
+             logicInputRadius: 50,
              r: 10,
+             inputHeight: 30,
+             inputWidth: 50,
+
+             currentScale: 1,
+             offsetX: 0,
+             offsetY: 0
+
         }
 
         this.apexNode = null;
@@ -400,6 +456,7 @@
                         node.number = pnode.nodeChildren.length - 1;
                         node.depth = pnode.depth + 1;
                     }
+                    node.attachSurface(self.surface);
                     self.nodesCollection.push(node);
                 } else {
                     return;
@@ -424,7 +481,9 @@
         */
         initHandlers: function() {
             var self = this,
-                receiver = null;
+                receiver = null,
+                offsetStart = {},
+                downFlag = false;
             this.snap.mousedown(function(e) {
                 //console.log(e.target);
                 if (e.target.nodeName === 'circle') {
@@ -458,6 +517,39 @@
                     self.treeLayout();
                 }
             });
+
+            this.surface.node.addEventListener ("wheel", function(e) {
+                var delta = (e.wheelDelta) < 0 ? -0.5 : 0.5;
+                if (self.config.currentScale <= 1 && delta < 0) {
+                    self.config.currentScale /= 2;
+                } else {
+                    self.config.currentScale += delta;
+                }
+                self.drawAllNodes();
+            }, false);
+
+            this.surface.node.addEventListener ("mousedown", function(e) {
+                downFlag = true;
+                offsetStart = { x: e.clientX, y: e.clientY };
+                console.log('down');
+            }, false);
+
+            this.surface.node.addEventListener ("mousemove", function(e) {
+                if (downFlag) {
+                    self.config.offsetX += e.clientX - offsetStart.x;
+                    self.config.offsetY += e.clientY - offsetStart.y;
+
+                    offsetStart = { x: e.clientX, y: e.clientY };
+                    console.log('move');
+                    self.drawAllNodes();
+                }
+            }, false);
+
+            this.surface.node.addEventListener ("mouseup", function(e) {
+                downFlag = false;
+                console.log('up');
+            }, false);
+
         },
 
         /**
@@ -487,7 +579,6 @@
 
             this.firstWalk(this.apexNode, 1);
             this.secondWalk(this.apexNode, -this.apexNode.prelim);
-            //this.logNodesBy(['x', 'prelim']);
             this.drawAllNodes();
         },
 
@@ -677,16 +768,21 @@
 
         drawAllNodes: function() {
             var self = this,
-                k = this.config.logicInputRadius * 2 + 20,
-                x = this.config.treeLeft,
-                y = this.config.treeTop,
+                k = (this.config.logicInputRadius + 20) * this.config.currentScale,
+                x = this.config.treeLeft + this.config.offsetX,
+                y = this.config.treeTop + this.config.offsetY,
                 svg = self.surface.paper, path, cmd = [];
             self.surface.paper.clear();
 
             drawConnections(this.apexNode, 0, ConnectionType.STRAIGHT);
 
             Array.prototype.forEach.call(self.nodesCollection, function(node) {
-                self.drawLogicInput(x + node.x * k, y + node.depth * 50, node._id);
+                //node.draw(x + node.x * k, y + node.depth * 50 * self.config.currentScale, self.config.logicInputRadius * self.config.currentScale);
+                node.draw(  x + node.x * k - self.config.inputWidth * self.config.currentScale / 2,
+                            y + node.depth * 100 * self.config.currentScale - self.config.inputHeight * self.config.currentScale / 2,
+                            self.config.inputWidth * self.config.currentScale,
+                            self.config.inputHeight * self.config.currentScale,
+                            5);
                 // self.surface.text(x + node.x * k - 5, y + node.depth * 50 + 5, node.x);
             });
 
@@ -695,14 +791,14 @@
                     if (node) {
                         if (conType === ConnectionType.BEZIER) {
                             path = svg.path();
-                            cmd.push('M' + (x + root.x * k) + ',' + (y + depth * 50));
-                            cmd.push('C' + (x + root.x * k) + ',' + (y + (depth + 1) * 50));
-                            cmd.push((x + node.x * k) + ',' + (y + depth * 50 + 25));
-                            cmd.push((x + node.x * k) + ',' + (y + (depth + 1) * 50));
+                            cmd.push('M' + (x + root.x * k) + ',' + (y + depth * 100 * self.config.currentScale));
+                            cmd.push('C' + (x + root.x * k) + ',' + (y + (depth + 1) * 100 * self.config.currentScale));
+                            cmd.push((x + node.x * k) + ',' + (y + depth * 100 * self.config.currentScale + 25));
+                            cmd.push((x + node.x * k) + ',' + (y + (depth + 1) * 100 * self.config.currentScale));
                             path.node.setAttribute('d', cmd.join(' '));
                             cmd = [];
                         } else if (conType === ConnectionType.STRAIGHT) {
-                            svg.line(x + root.x * k, y + depth * 50, x + node.x * k, y + (depth + 1) * 50);
+                            svg.line(x + root.x * k, y + depth * 100 * self.config.currentScale, x + node.x * k, y + (depth + 1) * 100 * self.config.currentScale);
                         }
 
                         drawConnections(node, depth + 1, conType);
