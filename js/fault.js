@@ -327,7 +327,7 @@
             // if (!this.begX && !this.begY) {
 
                 //this.surface.circle(x, y, r).attr({id: this._id});
-                this.surface.rect(x, y, w, h, r, r);
+                this.surface.rect(x, y, w, h, r, r).attr({id: this._id});
             //     return false;
             // }
             // if (!this.addToX) {
@@ -359,7 +359,7 @@
         this.config = {
              siblingSeparation : 40,
              treeTop: 80,
-             treeLeft: 950,
+             treeLeft: snap('#' + surfaceId).node.clientWidth / 2,
              logicInputRadius: 50,
              r: 10,
              inputHeight: 30,
@@ -486,7 +486,7 @@
                 downFlag = false;
             this.snap.mousedown(function(e) {
                 //console.log(e.target);
-                if (e.target.nodeName === 'circle') {
+                if (e.target.nodeName === 'rect') {
                     var id = e.target.id, el = null, pIds = [];
                     for (var i = 0; i < self.nodesCollection.length; i++) {
                         if (id === self.nodesCollection[i]._id) {
