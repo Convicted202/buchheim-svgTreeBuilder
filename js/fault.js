@@ -774,7 +774,7 @@
                 svg = self.surface.paper, path, cmd = [];
             self.surface.paper.clear();
 
-            drawConnections(this.apexNode, 0, ConnectionType.STRAIGHT);
+            drawConnections(this.apexNode, 0, ConnectionType.BEZIER);
 
             Array.prototype.forEach.call(self.nodesCollection, function(node) {
                 //node.draw(x + node.x * k, y + node.depth * 50 * self.config.currentScale, self.config.logicInputRadius * self.config.currentScale);
