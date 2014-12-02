@@ -589,14 +589,19 @@
             }
 
             function loop(root) {
-                var innerTag = '';
+                var innerTag = '',
+                    children = root.children,
+                    classList = '';
                 innerTag += startTag(child);
                 // innerTag += ;
-                innerTag += startTag(text) + startTag({class: 'icon'}) + endTag({}) + root.id + endTag(text);
-                if (root.children && root.children.length) {
+                if (children && children.length) {
+                    classList = ' expandible collapsed';
+                }
+                innerTag += startTag(text) + startTag({class: 'icon' + classList}) + endTag({}) + root.id + endTag(text);
+                if (children && children.length) {
                     innerTag += startTag(parent);
                     // innerTag += startTag() + endTag();
-                    [].forEach.call(root.children, function(node) {
+                    [].forEach.call(children, function(node) {
                         innerTag += loop(node);
                     });
                     innerTag += endTag(parent);

@@ -1,3 +1,35 @@
+@font-face {
+  font-family: 'icomoon';
+  src: url("../fonts/icomoon.eot?-xtk5z3");
+  src: url("../fonts/icomoon.eot?#iefix-xtk5z3") format("embedded-opentype"), url("../fonts/icomoon.woff?-xtk5z3") format("woff"), url("../fonts/icomoon.ttf?-xtk5z3") format("truetype"), url("../fonts/icomoon.svg?-xtk5z3#icomoon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.icon-leaf:before {
+  content: "\e600";
+}
+
+.icon-cd:before {
+  content: "\e601";
+}
+
+.icon-minus:before {
+  content: "\e602";
+}
+
+.icon-plus:before {
+  content: "\e603";
+}
+
+.icon-arrow-down:before {
+  content: "\e604";
+}
+
+.icon-arrow-right:before {
+  content: "\e605";
+}
+
 * {
   box-sizing: border-box;
 }
@@ -92,7 +124,7 @@ html, body {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  padding: 5px 5px 5px 10px;
+  padding: 5px 5px 5px 5px;
   background-color: #f0f0f0;
   line-height: 19px;
   cursor: pointer;
@@ -102,11 +134,33 @@ html, body {
   background-color: #85b5c7;
   color: #f0f0f0;
 }
+#leftbar #treeList #treeContainer .displayInfo:hover .icon {
+  color: #f0f0f0;
+}
 #leftbar #treeList #treeContainer .displayInfo .icon {
-  height: 20px;
-  width: 20px;
   display: inline-block;
   margin-right: 5px;
+  padding: 1px 2px 3px 0px;
+  font-family: 'icomoon';
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  color: #3d7d99;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+#leftbar #treeList #treeContainer .displayInfo .icon:before {
+  content: "\e600";
+}
+#leftbar #treeList #treeContainer .displayInfo .icon.expandible:before {
+  content: "\e603";
+}
+#leftbar #treeList #treeContainer .displayInfo .icon.expandible.collapsed:before {
+  content: "\e602";
 }
 
 #rightbar {
