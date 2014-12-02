@@ -572,10 +572,19 @@
             text.tag = text.tag || 'span';
             text.class = text.class || '';
 
-            function startTag(tag) {
-                return '<' + tag.tag + ' class="' + tag.class + '">';
+            function startTag(tag, first) {
+                var cl = '';
+                if (first) {
+                    cl = ' root';
+                }
+                tag = tag || {};
+                tag.tag = tag.tag || 'span';
+                tag.class = tag.class || 'default'
+                return '<' + tag.tag + ' class="' + tag.class + cl + '">';
             }
             function endTag(tag) {
+                tag = tag || {};
+                tag.tag = tag.tag || 'span';
                 return '</' + tag.tag + '>';
             }
 
@@ -585,6 +594,7 @@
                 innerTag += startTag(text) + root.id + endTag(text);
                 if (root.children && root.children.length) {
                     innerTag += startTag(parent);
+                    // innerTag += startTag() + endTag();
                     [].forEach.call(root.children, function(node) {
                         innerTag += loop(node);
                     });
@@ -594,7 +604,7 @@
                 return innerTag;
             }
 
-            tag += startTag(parent);
+            tag += startTag(parent, true);
             tag += loop(this.jsonTree);
             tag += endTag(parent);
             return tag;

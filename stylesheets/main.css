@@ -30,7 +30,42 @@ html, body {
 #leftbar #treeList {
   height: 100%;
   width: 100%;
-  padding: 30px;
+  padding: 20px 10px;
+}
+#leftbar #treeList #treeContainer {
+  overflow: auto;
+  height: 100%;
+}
+#leftbar #treeList #treeContainer .child {
+  position: relative;
+  padding: 5px 0px 5px 10px;
+}
+#leftbar #treeList #treeContainer .child:before {
+  content: '';
+  position: absolute;
+  border-left: 1px solid #999;
+  left: -20px;
+  height: 100%;
+  top: -5px;
+  width: 1px;
+}
+#leftbar #treeList #treeContainer .child:after {
+  content: '';
+  position: absolute;
+  border-bottom: 1px solid #999;
+  left: -20px;
+  height: 1px;
+  top: 20px;
+  width: 30px;
+}
+#leftbar #treeList #treeContainer ul.root > .child:first-child {
+  border: none;
+}
+#leftbar #treeList #treeContainer ul.root > .child:first-child:before, #leftbar #treeList #treeContainer ul.root > .child:first-child:after {
+  border: none;
+}
+#leftbar #treeList #treeContainer .parent {
+  padding: 5px 0px 5px 30px;
 }
 #leftbar #treeList .displayInfo {
   display: block;
@@ -39,8 +74,19 @@ html, body {
   height: 30px;
   border-radius: 6px;
   vertical-align: middle;
-  line-height: 25px;
-  margin: 10px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 5px 5px 5px 10px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+#leftbar #treeList .displayInfo:hover {
+  background-color: #85b5c7;
+  color: #f0f0f0;
+}
+#leftbar #treeList .root {
+  padding: 0;
 }
 
 #rightbar {

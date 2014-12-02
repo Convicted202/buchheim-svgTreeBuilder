@@ -27,7 +27,7 @@ window.addEventListener('load', function() {
 });
 
 function applicationStart(data) {
-    var treeListContainer = $('#treeList');
+    var treeListContainer = $('#treeContainer');
     window.tree = new FaultTree(Snap, 'surface');
     tree.init(data);
     treeListContainer.innerHTML =
