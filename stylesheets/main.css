@@ -27,6 +27,21 @@ html, body {
   background-color: #e2e2e2;
   z-index: 1;
 }
+#leftbar #treeList {
+  height: 100%;
+  width: 100%;
+  padding: 30px;
+}
+#leftbar #treeList .displayInfo {
+  display: block;
+  border: 1px #898989 solid;
+  width: auto;
+  height: 30px;
+  border-radius: 6px;
+  vertical-align: middle;
+  line-height: 25px;
+  margin: 10px;
+}
 
 #rightbar {
   height: 100%;

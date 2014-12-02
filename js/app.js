@@ -27,8 +27,15 @@ window.addEventListener('load', function() {
 });
 
 function applicationStart(data) {
+    var treeListContainer = $('#treeList');
     window.tree = new FaultTree(Snap, 'surface');
     tree.init(data);
+    treeListContainer.innerHTML =
+        tree.generateTreeList(
+            { tag: 'ul', class: 'parent' },
+            { tag: 'li', class: 'child' },
+            { tag: 'span', class: 'displayInfo' }
+        );
     window.json = tree.getJsonTree();
     closeHandlersInit();
     resizersInit();

@@ -352,6 +352,8 @@
 
     var FaultTree = function(snap, surfaceId, configs) {
         this.jsonTree = {};
+
+        this.jsonList = {};
         this.nodesCollection = [];
 
         this.snap = snap;
@@ -387,6 +389,7 @@
                 data = Helpers.generateJson(5, 2);
             }
             this.jsonTree = data;
+            this.jsonList = Helpers.extend({}, data);
             this.treeLayout();
             this.initHandlers();
         },
@@ -550,6 +553,51 @@
                 console.log('up');
             }, false);
 
+        },
+
+        /**
+          * @desc generates TreeList view from given previously initialized jsonList
+          * @param object parent - parent wrapper containing tag and class
+          * @param object child - child wrapper containing tag and class
+          * @param object text - text wrapper containing tag and class
+          * @return void
+        */
+        generateTreeList: function(parent, child, text) {
+            var tag = '';
+
+            parent.tag = parent.tag || 'ul';
+            parent.class = parent.class || '';
+            child.tag = child.tag || 'li';
+            child.class = child.class || '';
+            text.tag = text.tag || 'span';
+            text.class = text.class || '';
+
+            function startTag(tag) {
+                return '<' + tag.tag + ' class="' + tag.class + '">';
+            }
+            function endTag(tag) {
+                return '</' + tag.tag + '>';
+            }
+
+            function loop(root) {
+                var innerTag = '';
+                innerTag += startTag(child);
+                innerTag += startTag(text) + root.id + endTag(text);
+                if (root.children && root.children.length) {
+                    innerTag += startTag(parent);
+                    [].forEach.call(root.children, function(node) {
+                        innerTag += loop(node);
+                    });
+                    innerTag += endTag(parent);
+                }
+                innerTag += endTag(child);
+                return innerTag;
+            }
+
+            tag += startTag(parent);
+            tag += loop(this.jsonTree);
+            tag += endTag(parent);
+            return tag;
         },
 
         /**
