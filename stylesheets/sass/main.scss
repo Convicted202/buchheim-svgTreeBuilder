@@ -42,6 +42,7 @@ html, body {
             .child {
                 position: relative;
                 padding: 5px 0px 5px 10px;
+                list-style-type: none;
 
                 &:before {
                     content: '';
@@ -65,6 +66,9 @@ html, body {
             }
 
             ul.root {
+                padding-left: 0;
+                list-style-type: none;
+
                 > .child:first-child {
                     border: none;
                     &:before, &:after {
@@ -73,35 +77,53 @@ html, body {
                 }
             }
 
+            ul {
+                > .child:last-child {
+                    &:before {
+                        height: 27px;
+                        width: 30px;
+                        border-bottom: 1px solid #999;
+                        border-bottom-left-radius: 6px;
+                    }
+                    &:after {
+                        border: none;
+                    }
+                }
+            }
+
             .parent {
                 padding: 5px 0px 5px 30px;
             }
-        }
 
-        .displayInfo {
-            display: block;
-            border: 1px #898989 solid;
-            width: auto;
-            height: 30px;
-            border-radius: 6px;
-            vertical-align: middle;
-            //line-height: 25px;
-            // margin: 10px;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
-            padding: 5px 5px 5px 10px;
-            background-color: #f0f0f0;
-            cursor: pointer;
+            .displayInfo {
+                display: inline-block;
+                border: 1px #898989 solid;
+                width: auto;
+                height: 30px;
+                border-radius: 6px;
+                vertical-align: middle;
+                min-width: 100px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+                padding: 5px 5px 5px 10px;
+                background-color: #f0f0f0;
+                line-height: 19px;
+                cursor: pointer;
+                vertical-align: top;
 
-            &:hover {
-                background-color: #85b5c7;
-                color: #f0f0f0;
+                &:hover {
+                    background-color: #85b5c7;
+                    color: #f0f0f0;
+                }
+
+                .icon {
+                    height: 20px;
+                    width: 20px;
+                    display: inline-block;
+                    margin-right: 5px;
+                }
             }
-        }
-
-        .root {
-            padding: 0;
         }
     }
 }

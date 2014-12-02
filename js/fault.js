@@ -591,7 +591,8 @@
             function loop(root) {
                 var innerTag = '';
                 innerTag += startTag(child);
-                innerTag += startTag(text) + root.id + endTag(text);
+                // innerTag += ;
+                innerTag += startTag(text) + startTag({class: 'icon'}) + endTag({}) + root.id + endTag(text);
                 if (root.children && root.children.length) {
                     innerTag += startTag(parent);
                     // innerTag += startTag() + endTag();

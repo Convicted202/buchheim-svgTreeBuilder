@@ -39,6 +39,7 @@ html, body {
 #leftbar #treeList #treeContainer .child {
   position: relative;
   padding: 5px 0px 5px 10px;
+  list-style-type: none;
 }
 #leftbar #treeList #treeContainer .child:before {
   content: '';
@@ -58,35 +59,54 @@ html, body {
   top: 20px;
   width: 30px;
 }
+#leftbar #treeList #treeContainer ul.root {
+  padding-left: 0;
+  list-style-type: none;
+}
 #leftbar #treeList #treeContainer ul.root > .child:first-child {
   border: none;
 }
 #leftbar #treeList #treeContainer ul.root > .child:first-child:before, #leftbar #treeList #treeContainer ul.root > .child:first-child:after {
   border: none;
 }
+#leftbar #treeList #treeContainer ul > .child:last-child:before {
+  height: 27px;
+  width: 30px;
+  border-bottom: 1px solid #999;
+  border-bottom-left-radius: 6px;
+}
+#leftbar #treeList #treeContainer ul > .child:last-child:after {
+  border: none;
+}
 #leftbar #treeList #treeContainer .parent {
   padding: 5px 0px 5px 30px;
 }
-#leftbar #treeList .displayInfo {
-  display: block;
+#leftbar #treeList #treeContainer .displayInfo {
+  display: inline-block;
   border: 1px #898989 solid;
   width: auto;
   height: 30px;
   border-radius: 6px;
   vertical-align: middle;
+  min-width: 100px;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
   padding: 5px 5px 5px 10px;
   background-color: #f0f0f0;
+  line-height: 19px;
   cursor: pointer;
+  vertical-align: top;
 }
-#leftbar #treeList .displayInfo:hover {
+#leftbar #treeList #treeContainer .displayInfo:hover {
   background-color: #85b5c7;
   color: #f0f0f0;
 }
-#leftbar #treeList .root {
-  padding: 0;
+#leftbar #treeList #treeContainer .displayInfo .icon {
+  height: 20px;
+  width: 20px;
+  display: inline-block;
+  margin-right: 5px;
 }
 
 #rightbar {
