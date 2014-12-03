@@ -197,6 +197,9 @@ html, body {
   cursor: pointer;
   vertical-align: top;
 }
+#leftbar #treeList #treeContainer .displayInfo.highlighted {
+  background-color: #E74C3C;
+}
 #leftbar #treeList #treeContainer .displayInfo:hover {
   background-color: #85b5c7;
   color: #f0f0f0;

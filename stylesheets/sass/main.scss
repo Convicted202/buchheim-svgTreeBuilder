@@ -245,6 +245,10 @@ html, body {
                 cursor: pointer;
                 vertical-align: top;
 
+                &.highlighted {
+                    background-color: #E74C3C;
+                }
+
                 &:hover {
                     background-color: #85b5c7;
                     color: #f0f0f0;

@@ -30,15 +30,16 @@ define([], function() {
         return hasClass(this, className);
     }
 
+    HTMLElement.prototype.addClass = function(className) {
+        this.classList.add(className);
+    }
+
+    HTMLElement.prototype.removeClass = function(className) {
+        this.classList.remove(className);
+    }
+
     HTMLElement.prototype.toggleClass = function(className) {
-        if (this.hasClass(className)) {
-            this.className = this.className.replace(className, '');
-        } else {
-            if (this.className) {
-                this.className += ' ';
-            }
-            this.className += className;
-        }
+        this.classList.toggle(className);
     }
 
     HTMLElement.prototype.getNumericStyle = function(styleName) {

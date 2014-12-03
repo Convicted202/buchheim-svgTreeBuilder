@@ -16,12 +16,6 @@ define(['Helper'], function(Helpers) {
         this.x = 0;
         this.y = 0;
 
-        // this.begX = 0;
-        // this.begY = 0;
-
-        // this.currentX = 0;
-        // this.currentY = 0;
-
         this.addToX = null;
 
         this.prelim = 0;

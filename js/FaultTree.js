@@ -217,10 +217,15 @@ define(['Helper', 'Animator', 'TreeNode'], function(Helpers, Animator, TreeNode)
           * @param object parent - parent wrapper containing tag and class
           * @param object child - child wrapper containing tag and class
           * @param object text - text wrapper containing tag and class
+          * @param boolean forceRegenerate - generates tree list no matter if we have one already
           * @return void
         */
-        generateTreeList: function(parent, child, text) {
+        generateTreeList: function(parent, child, text, forceGegenerate) {
             var tag = '';
+
+            if (!forceGegenerate && this.treeListTagged) {
+                return this.treeListTagged;
+            }
 
             parent.tag = parent.tag || 'ul';
             parent.class = parent.class || '';
@@ -229,15 +234,16 @@ define(['Helper', 'Animator', 'TreeNode'], function(Helpers, Animator, TreeNode)
             text.tag = text.tag || 'span';
             text.class = text.class || '';
 
-            function startTag(tag, first) {
+            function startTag(tag, first, dataId) {
                 var cl = '';
                 if (first) {
                     cl = ' root';
                 }
+                dataId = dataId ? 'data-id="' + dataId + '"' : '';
                 tag = tag || {};
                 tag.tag = tag.tag || 'span';
                 tag.class = tag.class || 'default'
-                return '<' + tag.tag + ' class="' + tag.class + cl + '">';
+                return '<' + tag.tag + ' class="' + tag.class + cl + '"' + dataId + '>';
             }
             function endTag(tag) {
                 tag = tag || {};
@@ -250,14 +256,12 @@ define(['Helper', 'Animator', 'TreeNode'], function(Helpers, Animator, TreeNode)
                     children = root.children,
                     classList = '';
                 innerTag += startTag(child);
-                // innerTag += ;
                 if (children && children.length) {
                     classList = ' expandible collapsed';
                 }
-                innerTag += startTag(text) + startTag({class: 'icon' + classList}) + endTag({}) + root.id + endTag(text);
+                innerTag += startTag(text, false, root.id) + startTag({class: 'icon' + classList}) + endTag({}) + root.id + endTag(text);
                 if (children && children.length) {
                     innerTag += startTag(parent);
-                    // innerTag += startTag() + endTag();
                     [].forEach.call(children, function(node) {
                         innerTag += loop(node);
                     });
@@ -270,8 +274,14 @@ define(['Helper', 'Animator', 'TreeNode'], function(Helpers, Animator, TreeNode)
             tag += startTag(parent, true);
             tag += loop(this.jsonTree);
             tag += endTag(parent);
+
+            this.treeListTagged = tag;
             return tag;
         },
+
+        // getSearchedTreeListTagged: function(searchQuery) {
+
+        // },
 
         /**
           * @desc logs all nodes properties specified by provided config array

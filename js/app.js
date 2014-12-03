@@ -2,7 +2,7 @@ require(['snap', 'FaultTree', 'defaults', 'ElementsEnhancement'], function(Snap,
 
     'use strict'
 
-    var data = defaultData[0],
+    var data = defaultData[2],
         treeListContainer = $.one('#treeContainer'),
         tree = new FaultTree(Snap, 'surface');
 
@@ -16,6 +16,7 @@ require(['snap', 'FaultTree', 'defaults', 'ElementsEnhancement'], function(Snap,
     closeHandlersInit();
     resizersInit();
     initExpandibility();
+    higlightNodesBySearch();
 
 
     function closeHandlersInit() {
@@ -100,4 +101,25 @@ require(['snap', 'FaultTree', 'defaults', 'ElementsEnhancement'], function(Snap,
         });
     }
 
+// TODO: implement scrolling to first entry;
+//  implement clear search
+    function higlightNodesBySearch() {
+        var input = $.one('#searchField');
+
+        var searchNode = function() {
+            var query = this.value,
+                oldHiglightedElements = $.all('span.displayInfo.highlighted'),
+                searchElements = $.all('span[data-id^="' + query + '"]' );
+
+            [].forEach.call(oldHiglightedElements, function(el) {
+                el.removeClass('highlighted');
+            });
+
+            [].forEach.call(searchElements, function(el) {
+                el.addClass('highlighted');
+            });
+        }
+
+        input.addEventListener('keyup', searchNode);
+    }
 });
