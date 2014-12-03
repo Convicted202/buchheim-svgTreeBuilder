@@ -121,6 +121,9 @@ html, body {
 #leftbar #treeList #treeContainer ul.root > .child:first-child:before, #leftbar #treeList #treeContainer ul.root > .child:first-child:after {
   border: none;
 }
+#leftbar #treeList #treeContainer ul.hidden {
+  display: none;
+}
 #leftbar #treeList #treeContainer ul > .child:last-child:before {
   height: 27px;
   width: 30px;

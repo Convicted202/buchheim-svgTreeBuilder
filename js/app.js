@@ -39,6 +39,7 @@ function applicationStart(data) {
     window.json = tree.getJsonTree();
     closeHandlersInit();
     resizersInit();
+    initExpandibility();
 }
 
 function $() {
@@ -140,6 +141,17 @@ function resizersInit() {
 
             document.addEventListener('mousemove', onMouseMove);
             document.addEventListener('mouseup', onMouseUp);
+        });
+    });
+}
+
+function initExpandibility () {
+    var icons = $all('.icon.expandible');
+
+    [].forEach.call(icons, function(button) {
+        button.addEventListener('mousedown', function(e) {
+            var ul = button.parentNode.parentNode.querySelector('ul');
+            ul.toggleClass('hidden');
         });
     });
 }
