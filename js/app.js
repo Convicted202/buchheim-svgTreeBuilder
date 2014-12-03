@@ -152,6 +152,7 @@ function initExpandibility () {
         button.addEventListener('mousedown', function(e) {
             var ul = button.parentNode.parentNode.querySelector('ul');
             ul.toggleClass('hidden');
+            this.toggleClass('collapsed');
         });
     });
 }
