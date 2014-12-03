@@ -1,34 +1,11 @@
-window.addEventListener('load', function() {
+require(['snap', 'FaultTree', 'defaults', 'ElementsEnhancement'], function(Snap, FaultTree, defaultData, $) {
 
-    var req = new XMLHttpRequest(),
-        dataUrl = 'js/default4-data.json',
-        data;
+    'use strict'
 
-    req.open("GET", dataUrl, true);
+    var data = defaultData[0],
+        treeListContainer = $.one('#treeContainer'),
+        tree = new FaultTree(Snap, 'surface');
 
-    req.onreadystatechange = function ()
-    {
-        try {
-            if (req.readyState === 4) {
-                if (req.status === 200) {
-                    data = req.responseText;
-                    applicationStart(JSON.parse(data));
-                } else {
-                    console.error('Unable to retrieve data. ' + req.statusText);
-                }
-            }
-        }
-        catch( e ) {
-            console.log(e);
-        }
-    };
-
-    req.send(null);
-});
-
-function applicationStart(data) {
-    var treeListContainer = $('#treeContainer');
-    window.tree = new FaultTree(Snap, 'surface');
     tree.init(data);
     treeListContainer.innerHTML =
         tree.generateTreeList(
@@ -36,123 +13,91 @@ function applicationStart(data) {
             { tag: 'li', class: 'child' },
             { tag: 'span', class: 'displayInfo' }
         );
-    window.json = tree.getJsonTree();
     closeHandlersInit();
     resizersInit();
     initExpandibility();
-}
 
-function $() {
-    var qs = document.querySelector;
-    return qs.apply(document, [].slice.apply(arguments));
-}
 
-function $all() {
-    var qs = document.querySelectorAll;
-    return qs.apply(document, [].slice.apply(arguments));
-}
+    function closeHandlersInit() {
+        var leftbar = $.one('#leftbar'),
+            bottombar = $.one('#rightbottombar');
 
-function hasClass(target, className) {
-    return new RegExp('(\\s|^)' + className + '(\\s|$)').test(target.className);
-}
+        $.one('#hideLeft').addEventListener('click', function(e) {
+            leftbar.toggleClass('shrinkedHorizontal');
+        });
 
-HTMLElement.prototype.hasClass = function(className) {
-    return hasClass(this, className);
-}
-
-HTMLElement.prototype.toggleClass = function(className) {
-    if (this.hasClass(className)) {
-        this.className = this.className.replace(className, '');
-    } else {
-        if (this.className) {
-            this.className += ' ';
-        }
-        this.className += className;
+        $.one('#hideBottom').addEventListener('click', function(e) {
+            bottombar.toggleClass('shrinkedVertical');
+        });
     }
-}
 
-HTMLElement.prototype.getNumericStyle = function(styleName) {
-    return +window.getComputedStyle(this, null).getPropertyValue(styleName).replace(/[^\d]+/, '');
-}
+    function resizersInit() {
+        var resizers = $.all('.resizer'),
+            currentElement = null;
 
-function closeHandlersInit() {
-    var leftbar = $('#leftbar'),
-        bottombar = $('#rightbottombar');
+        var onMouseMove = function (e) {
+            var value, temp,
+                isVert = currentElement.hasClass('vertical');
 
-    $('#hideLeft').addEventListener('click', function(e) {
-        leftbar.toggleClass('shrinkedHorizontal');
-    });
-
-    $('#hideBottom').addEventListener('click', function(e) {
-        bottombar.toggleClass('shrinkedVertical');
-    });
-}
-
-function resizersInit() {
-    var resizers = $all('.resizer'),
-        currentElement = null;
-
-    var onMouseMove = function (e) {
-        var value, temp,
-            isVert = currentElement.hasClass('vertical');
-
-        if (!currentElement.resizersVal) {
-            return;
-        }
-
-        if (isVert) {
-            value = e.clientX;
-        } else {
-            value = e.clientY;
-        }
-
-        temp = value;
-        value -= currentElement.resizersVal;
-        currentElement.resizersVal = temp;
-        if (isVert) {
-            currentElement.parentNode.style.width = currentElement.parentNode.getNumericStyle('width') + value + 'px';
-        } else {
-            currentElement.parentNode.style.height = currentElement.parentNode.getNumericStyle('height') - value + 'px';
-        }
-
-    };
-
-    var onMouseUp = function(e) {
-        currentElement.parentNode.toggleClass('fasttransition');
-        currentElement.resizersVal = null;
-        currentElement = null;
-
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
-    };
-
-    [].forEach.call(resizers, function(resizer) {
-        resizer.addEventListener('mousedown', function(e) {
-            e.preventDefault();
-            currentElement = this;
-
-            this.parentNode.toggleClass('fasttransition');
-
-            if (this.hasClass('vertical')) {
-                currentElement.resizersVal = e.clientX;
-            } else {
-                currentElement.resizersVal = e.clientY;
+            if (!currentElement.resizersVal) {
+                return;
             }
 
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', onMouseUp);
-        });
-    });
-}
+            if (isVert) {
+                value = e.clientX;
+            } else {
+                value = e.clientY;
+            }
 
-function initExpandibility () {
-    var icons = $all('.icon.expandible');
+            temp = value;
+            value -= currentElement.resizersVal;
+            currentElement.resizersVal = temp;
+            if (isVert) {
+                currentElement.parentNode.style.width = currentElement.parentNode.getNumericStyle('width') + value + 'px';
+            } else {
+                currentElement.parentNode.style.height = currentElement.parentNode.getNumericStyle('height') - value + 'px';
+            }
 
-    [].forEach.call(icons, function(button) {
-        button.addEventListener('mousedown', function(e) {
-            var ul = button.parentNode.parentNode.querySelector('ul');
-            ul.toggleClass('hidden');
-            this.toggleClass('collapsed');
+        };
+
+        var onMouseUp = function(e) {
+            currentElement.parentNode.toggleClass('fasttransition');
+            currentElement.resizersVal = null;
+            currentElement = null;
+
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+        };
+
+        [].forEach.call(resizers, function(resizer) {
+            resizer.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+                currentElement = this;
+
+                this.parentNode.toggleClass('fasttransition');
+
+                if (this.hasClass('vertical')) {
+                    currentElement.resizersVal = e.clientX;
+                } else {
+                    currentElement.resizersVal = e.clientY;
+                }
+
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
         });
-    });
-}
+    }
+
+    function initExpandibility () {
+        var icons = $.all('.icon.expandible');
+
+        [].forEach.call(icons, function(button) {
+            button.addEventListener('mousedown', function(e) {
+                var ul = button.parentNode.parentNode.querySelector('ul');
+                ul.toggleClass('hidden');
+                this.toggleClass('collapsed');
+            });
+        });
+    }
+
+});
