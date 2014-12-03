@@ -80,6 +80,10 @@ html, body {
   background-color: #e2e2e2;
   z-index: 1;
 }
+#leftbar.shrinkedHorizontal #searchContainer, #leftbar.shrinkedHorizontal #searchField {
+  padding-left: 0;
+  padding-right: 0;
+}
 #leftbar input {
   background: linear-gradient(to bottom, #f7f7f8 0%, #ffffff 100%);
   border-radius: 3px;
@@ -415,11 +419,23 @@ html, body {
   left: 0;
   z-index: 0;
   position: absolute;
+  background: #efefef;
+  cursor: -webkit-grab;
+}
+
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 circle, rect {
   fill: whitesmoke;
   stroke: black;
+  cursor: pointer;
 }
 circle:hover, rect:hover {
   fill: #85b5c7;
