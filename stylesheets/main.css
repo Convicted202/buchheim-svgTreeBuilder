@@ -30,6 +30,26 @@
   content: "\e605";
 }
 
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  background: #838383;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-corner {
+  background: #e2e2e2;
+}
+
 * {
   box-sizing: border-box;
 }
