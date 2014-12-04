@@ -46,6 +46,22 @@ define([], function() {
         return +window.getComputedStyle(this, null).getPropertyValue(styleName).replace(/[^\d]+/, '');
     }
 
+    window.Object.defineProperty(Element.prototype, 'documentOffsetTop', {
+        get: function() {
+            return this.offsetTop + (this.offsetParent ? this.offsetParent.documentOffsetTop : 0);
+        }
+    });
+
+    window.Object.defineProperty(Element.prototype, 'documentOffsetLeft', {
+        get: function() {
+            return this.offsetLeft + (this.offsetParent ? this.offsetParent.documentOffsetLeft : 0);
+        }
+    });
+
+    Element.prototype.elementOffsetTop = function(element) {
+        return  this.offsetParent != element ? this.offsetTop + this.offsetParent.elementOffsetTop(element) : 0;
+    }
+
     return {
         one: $,
         all: $all

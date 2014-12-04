@@ -101,12 +101,13 @@ require(['snap', 'FaultTree', 'defaults', 'ElementsEnhancement'], function(Snap,
         });
     }
 
-// TODO: implement scrolling to first entry;
-//  implement clear search
+// TODO: make some improvements with search;
+// make scrollTop animations on query found
     function higlightNodesBySearch() {
         var input = $.one('#searchField'),
             clearBtn = $.one('#clearQuery'),
-            wrapper = input.parentNode;
+            wrapper = input.parentNode,
+            treeArea = $.one('#treeContainer');
 
         var searchNode = function() {
             var query = this.value,
@@ -121,6 +122,8 @@ require(['snap', 'FaultTree', 'defaults', 'ElementsEnhancement'], function(Snap,
                 el.addClass('highlighted');
             });
 
+            treeArea.scrollTop = searchElements.length ? searchElements[0].elementOffsetTop($.one('#leftbar')) : 0;
+
             if (query) {
                 wrapper.addClass('filled');
             } else {
@@ -131,6 +134,7 @@ require(['snap', 'FaultTree', 'defaults', 'ElementsEnhancement'], function(Snap,
         var activateClearBtn = function() {
             if (wrapper.hasClass('filled')) {
                 input.value = '';
+                treeArea.scrollTop = 0;
                 wrapper.removeClass('filled');
             }
         }
