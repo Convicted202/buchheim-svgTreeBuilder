@@ -122,7 +122,11 @@ require(['snap', 'FaultTree', 'defaults', 'ElementsEnhancement', 'Animator'], fu
                 el.addClass('highlighted');
             });
 
-            treeArea.scrollTop = searchElements.length ? searchElements[0].elementOffsetTop($.one('#leftbar')) : 0;
+            renderScrollTopMovement(
+                treeArea,
+                searchElements.length ? searchElements[0].elementOffsetTop($.one('#leftbar')) : 0,
+                10);
+            //treeArea.scrollTop = searchElements.length ? searchElements[0].elementOffsetTop($.one('#leftbar')) : 0;
 
             if (query) {
                 wrapper.addClass('filled');
@@ -160,7 +164,7 @@ require(['snap', 'FaultTree', 'defaults', 'ElementsEnhancement', 'Animator'], fu
                 element.scrollTop += diff;
                 return false;
             }
-            element.scrollTop += step;
+            element.scrollTop = startScrollTop += step;
             return true;
         }
 
