@@ -1,4 +1,4 @@
-require(['snap', 'FaultTree', 'defaults', 'ElementsEnhancement'], function(Snap, FaultTree, defaultData, $) {
+require(['snap', 'FaultTree', 'defaults', 'ElementsEnhancement', 'Animator'], function(Snap, FaultTree, defaultData, $, Animator) {
 
     'use strict'
 
@@ -147,5 +147,24 @@ require(['snap', 'FaultTree', 'defaults', 'ElementsEnhancement'], function(Snap,
 
         input.addEventListener('keyup', searchNode.bind(input));
         clearBtn.addEventListener('click', activateClearBtn.bind(clearBtn));
+    }
+
+    function renderScrollTopMovement(element, newScrollTop, time) {
+        var startScrollTop = element.scrollTop,
+            step = (newScrollTop - startScrollTop) / (time || 10);
+
+        function renderStep(delta) {
+            var diff = newScrollTop - startScrollTop;
+
+            if (diff <= step) {
+                element.scrollTop += diff;
+                return false;
+            }
+            element.scrollTop += step;
+            return true;
+        }
+
+        Animator.animate(renderStep);
+
     }
 });
