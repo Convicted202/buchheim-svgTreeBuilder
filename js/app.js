@@ -132,6 +132,12 @@ require(['snap', 'FaultTree', 'defaults', 'ElementsEnhancement'], function(Snap,
         }
 
         var activateClearBtn = function() {
+            var higlightedElements = $.all('span.displayInfo.highlighted');
+
+            [].forEach.call(higlightedElements, function(el) {
+                el.removeClass('highlighted');
+            });
+
             if (wrapper.hasClass('filled')) {
                 input.value = '';
                 treeArea.scrollTop = 0;
