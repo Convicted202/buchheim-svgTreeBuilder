@@ -102,12 +102,12 @@ require(['snap', 'FaultTree', 'defaults', 'ElementsEnhancement', 'Animator'], fu
     }
 
 // TODO: make some improvements with search;
-// make scrollTop animations on query found
     function higlightNodesBySearch() {
         var input = $.one('#searchField'),
             clearBtn = $.one('#clearQuery'),
             wrapper = input.parentNode,
-            treeArea = $.one('#treeContainer');
+            treeArea = $.one('#treeContainer'),
+            search = $.one('#searchContainer');
 
         var searchNode = function() {
             var query = this.value,
@@ -124,9 +124,8 @@ require(['snap', 'FaultTree', 'defaults', 'ElementsEnhancement', 'Animator'], fu
 
             renderScrollTopMovement(
                 treeArea,
-                searchElements.length ? searchElements[0].elementOffsetTop($.one('#leftbar')) : 0,
+                searchElements.length ? searchElements[0].documentOffsetTop - search.getNumericStyle('height') - 20 : 0,
                 10);
-            //treeArea.scrollTop = searchElements.length ? searchElements[0].elementOffsetTop($.one('#leftbar')) : 0;
 
             if (query) {
                 wrapper.addClass('filled');
@@ -153,6 +152,7 @@ require(['snap', 'FaultTree', 'defaults', 'ElementsEnhancement', 'Animator'], fu
         clearBtn.addEventListener('click', activateClearBtn.bind(clearBtn));
     }
 
+// TODO: improve method to animate upwards movement
     function renderScrollTopMovement(element, newScrollTop, time) {
         var startScrollTop = element.scrollTop,
             step = (newScrollTop - startScrollTop) / (time || 10);
