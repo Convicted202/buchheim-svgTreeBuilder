@@ -158,14 +158,14 @@ define(['Helper', 'Animator', 'TreeNode'], function(Helpers, Animator, TreeNode)
                     while (el = el.nodeParent) {
                         pIds.push(el._id);
                     }
-                    console.log(pIds);
+                    //console.log(pIds);
 
                     receiver = self.jsonTree
                     for (var i = pIds.length - 2; i >= 0; i--) {
                         for (var j = 0; j < receiver.children.length; j++) {
                             if (receiver.children[j].id === pIds[i]) {
                                 if (i === 0) {
-                                    console.log(receiver.children[j]);
+                                    //console.log(receiver.children[j]);
                                     receiver.children.pop(j);
                                 } else {
                                     receiver = receiver.children[j];
@@ -191,7 +191,7 @@ define(['Helper', 'Animator', 'TreeNode'], function(Helpers, Animator, TreeNode)
             this.surface.node.addEventListener ("mousedown", function(e) {
                 downFlag = true;
                 offsetStart = { x: e.clientX, y: e.clientY };
-                console.log('down');
+                //console.log('down');
             }, false);
 
             this.surface.node.addEventListener ("mousemove", function(e) {
@@ -200,14 +200,14 @@ define(['Helper', 'Animator', 'TreeNode'], function(Helpers, Animator, TreeNode)
                     self.config.offsetY += e.clientY - offsetStart.y;
 
                     offsetStart = { x: e.clientX, y: e.clientY };
-                    console.log('move');
+                    //console.log('move');
                     self.drawAllNodes();
                 }
             }, false);
 
             this.surface.node.addEventListener ("mouseup", function(e) {
                 downFlag = false;
-                console.log('up');
+                //console.log('up');
             }, false);
 
         },
