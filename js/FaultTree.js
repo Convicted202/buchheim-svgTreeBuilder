@@ -8,7 +8,7 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers'], function(Helpers, Anima
         POLYGONAL: 2
     }
 
-    var FaultTree = function(snap, surface, configs) {
+    var FaultTree = function(surface, configs) {
         this.jsonTree = {};
 
         this.jsonList = {};

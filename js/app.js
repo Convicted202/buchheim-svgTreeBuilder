@@ -1,10 +1,10 @@
-require(['snap', 'FaultTree', 'defaults', 'ElementsEnhancement', 'Animator'], function(Snap, FaultTree, defaultData, $, Animator) {
+require(['FaultTree', 'defaults', 'ElementsEnhancement', 'Animator'], function(FaultTree, defaultData, $, Animator) {
 
     'use strict'
 
     var data = defaultData[3],
         treeListContainer = $.one('#treeContainer'),
-        tree = new FaultTree(Snap, $.one('#surface'));
+        tree = new FaultTree($.one('#surface'));
 
     tree.init(data);
     treeListContainer.innerHTML =
