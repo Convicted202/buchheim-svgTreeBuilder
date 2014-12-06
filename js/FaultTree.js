@@ -1,4 +1,4 @@
-define(['Helper', 'Animator', 'TreeNode'], function(Helpers, Animator, TreeNode) {
+define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers'], function(Helpers, Animator, TreeNode, SVG) {
 
     'use strict'
 
@@ -8,18 +8,17 @@ define(['Helper', 'Animator', 'TreeNode'], function(Helpers, Animator, TreeNode)
         POLYGONAL: 2
     }
 
-    var FaultTree = function(snap, surfaceId, configs) {
+    var FaultTree = function(snap, surface, configs) {
         this.jsonTree = {};
 
         this.jsonList = {};
         this.nodesCollection = [];
+        this.svgSurface = new SVG(surface);
 
-        this.snap = snap;
-        this.surface = snap('#' + surfaceId)
         this.config = {
              siblingSeparation : 40,
              treeTop: 80,
-             treeLeft: snap('#' + surfaceId).node.clientWidth - snap('#' + surfaceId).node.parentNode.clientWidth / 2,
+             treeLeft: surface.clientWidth - surface.parentNode.clientWidth / 2,
              logicInputRadius: 50,
              r: 10,
              inputHeight: 30,
@@ -116,7 +115,7 @@ define(['Helper', 'Animator', 'TreeNode'], function(Helpers, Animator, TreeNode)
                         node.number = pnode.nodeChildren.length - 1;
                         node.depth = pnode.depth + 1;
                     }
-                    node.attachSurface(self.surface);
+                    node.attachSurface(self.svgSurface);
                     self.nodesCollection.push(node);
                 } else {
                     return;
@@ -144,8 +143,8 @@ define(['Helper', 'Animator', 'TreeNode'], function(Helpers, Animator, TreeNode)
                 receiver = null,
                 offsetStart = {},
                 downFlag = false;
-            this.snap.mousedown(function(e) {
-                //console.log(e.target);
+
+            var removeNode = function(e) {
                 if (e.target.nodeName === 'rect') {
                     var id = e.target.id, el = null, pIds = [];
                     for (var i = 0; i < self.nodesCollection.length; i++) {
@@ -176,9 +175,9 @@ define(['Helper', 'Animator', 'TreeNode'], function(Helpers, Animator, TreeNode)
                     }
                     self.treeLayout();
                 }
-            });
+            }
 
-            this.surface.node.addEventListener ("wheel", function(e) {
+            var onWheelScroll = function(e) {
                 var delta = (e.wheelDelta) < 0 ? -0.5 : 0.5;
                 if (self.config.currentScale <= 1 && delta < 0) {
                     self.config.currentScale /= 2;
@@ -186,30 +185,33 @@ define(['Helper', 'Animator', 'TreeNode'], function(Helpers, Animator, TreeNode)
                     self.config.currentScale += delta;
                 }
                 self.drawAllNodes();
-            }, false);
+            }
 
-            this.surface.node.addEventListener ("mousedown", function(e) {
-                downFlag = true;
-                offsetStart = { x: e.clientX, y: e.clientY };
-                //console.log('down');
-            }, false);
-
-            this.surface.node.addEventListener ("mousemove", function(e) {
-                if (downFlag) {
-                    self.config.offsetX += e.clientX - offsetStart.x;
-                    self.config.offsetY += e.clientY - offsetStart.y;
-
+            var canvasDrag = {
+                mousedown: function(e) {
+                    downFlag = true;
                     offsetStart = { x: e.clientX, y: e.clientY };
-                    //console.log('move');
-                    self.drawAllNodes();
+                },
+                mousemove: function(e) {
+                    if (downFlag) {
+                        self.config.offsetX += e.clientX - offsetStart.x;
+                        self.config.offsetY += e.clientY - offsetStart.y;
+
+                        offsetStart = { x: e.clientX, y: e.clientY };
+                        self.drawAllNodes();
+                    }
+                },
+                mouseup: function(e) {
+                    downFlag = false;
                 }
-            }, false);
+            }
 
-            this.surface.node.addEventListener ("mouseup", function(e) {
-                downFlag = false;
-                //console.log('up');
-            }, false);
+            this.svgSurface.addEventListener('mousedown', removeNode);
+            this.svgSurface.addEventListener('wheel', onWheelScroll);
 
+            this.svgSurface.addEventListener('mousedown', canvasDrag.mousedown);
+            this.svgSurface.addEventListener('mousemove', canvasDrag.mousemove);
+            this.svgSurface.addEventListener('mouseup', canvasDrag.mouseup);
         },
 
         /**
@@ -278,10 +280,6 @@ define(['Helper', 'Animator', 'TreeNode'], function(Helpers, Animator, TreeNode)
             this.treeListTagged = tag;
             return tag;
         },
-
-        // getSearchedTreeListTagged: function(searchQuery) {
-
-        // },
 
         /**
           * @desc logs all nodes properties specified by provided config array
@@ -492,47 +490,56 @@ define(['Helper', 'Animator', 'TreeNode'], function(Helpers, Animator, TreeNode)
             return defaultAncestor;
         },
 
-        drawLogicInput: function(x, y, id) {
-            this.surface.circle(x, y, this.config.logicInputRadius).attr({'id': id});
-            //this.snap.rect(x - 20, y, 40, 20);
+
+        /**
+          * @desc return center coordinates of the node
+          * @param TreeNode node - given node
+          * @return Object - x, y pair of provided center
+        */
+        getNodeCenter: function(node) {
+            var treeCenterX = this.config.treeLeft + this.config.offsetX,
+                treeCenterY = this.config.treeTop + this.config.offsetY,
+                nodeWidthScaled = (this.config.inputWidth * 2) * this.config.currentScale,
+                nodeHeightScaled = (this.config.inputHeight * 2) * this.config.currentScale;
+
+            return {
+                        x: treeCenterX + node.x * nodeWidthScaled,
+                        y: treeCenterY + node.depth * nodeHeightScaled
+                    }
         },
 
         drawAllNodes: function() {
             var self = this,
-                k = (this.config.logicInputRadius + 20) * this.config.currentScale,
-                x = this.config.treeLeft + this.config.offsetX,
-                y = this.config.treeTop + this.config.offsetY,
-                svg = self.surface.paper, path, cmd = [];
-            self.surface.paper.clear();
+                path, cmd = [];
 
-            drawConnections(this.apexNode, 0, ConnectionType.BEZIER);
+            self.svgSurface.clearSurface();
+
+            drawConnections(this.apexNode, ConnectionType.STRAIGHT);
 
             Array.prototype.forEach.call(self.nodesCollection, function(node) {
                 //node.draw(x + node.x * k, y + node.depth * 50 * self.config.currentScale, self.config.logicInputRadius * self.config.currentScale);
-                node.draw(  x + node.x * k - self.config.inputWidth * self.config.currentScale / 2,
-                            y + node.depth * 100 * self.config.currentScale - self.config.inputHeight * self.config.currentScale / 2,
+                var center = self.getNodeCenter(node);
+
+                node.draw(  center.x - self.config.inputWidth * self.config.currentScale / 2,
+                            center.y - self.config.inputHeight * self.config.currentScale / 2,
                             self.config.inputWidth * self.config.currentScale,
                             self.config.inputHeight * self.config.currentScale,
                             5);
-                // self.surface.text(x + node.x * k - 5, y + node.depth * 50 + 5, node.x);
+
             });
 
-            function drawConnections(root, depth, conType) {
+            function drawConnections(root, conType) {
+                var rootCenter = self.getNodeCenter(root);
                 Array.prototype.forEach.call(root.nodeChildren, function(node) {
                     if (node) {
+                        var nodeCenter = self.getNodeCenter(node);
                         if (conType === ConnectionType.BEZIER) {
-                            path = svg.path();
-                            cmd.push('M' + (x + root.x * k) + ',' + (y + depth * 100 * self.config.currentScale));
-                            cmd.push('C' + (x + root.x * k) + ',' + (y + (depth + 1) * 100 * self.config.currentScale));
-                            cmd.push((x + node.x * k) + ',' + (y + depth * 100 * self.config.currentScale + 25));
-                            cmd.push((x + node.x * k) + ',' + (y + (depth + 1) * 100 * self.config.currentScale));
-                            path.node.setAttribute('d', cmd.join(' '));
-                            cmd = [];
+                            self.svgSurface.simpleBezier(rootCenter.x, rootCenter.y, nodeCenter.x, nodeCenter.y);
                         } else if (conType === ConnectionType.STRAIGHT) {
-                            svg.line(x + root.x * k, y + depth * 100 * self.config.currentScale, x + node.x * k, y + (depth + 1) * 100 * self.config.currentScale);
+                            self.svgSurface.line(rootCenter.x, rootCenter.y, nodeCenter.x, nodeCenter.y);
                         }
 
-                        drawConnections(node, depth + 1, conType);
+                        drawConnections(node, conType);
                     }
                 });
             }

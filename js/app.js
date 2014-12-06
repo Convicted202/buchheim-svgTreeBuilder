@@ -4,7 +4,7 @@ require(['snap', 'FaultTree', 'defaults', 'ElementsEnhancement', 'Animator'], fu
 
     var data = defaultData[3],
         treeListContainer = $.one('#treeContainer'),
-        tree = new FaultTree(Snap, 'surface');
+        tree = new FaultTree(Snap, $.one('#surface'));
 
     tree.init(data);
     treeListContainer.innerHTML =

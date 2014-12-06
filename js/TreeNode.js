@@ -196,7 +196,7 @@ define(['Helper'], function(Helpers) {
             // if (!this.begX && !this.begY) {
 
                 //this.surface.circle(x, y, r).attr({id: this._id});
-                this.surface.rect(x, y, w, h, r, r).attr({id: this._id});
+                this.surface.roundRect(x, y, w, h, r, r, this._id);
             //     return false;
             // }
             // if (!this.addToX) {
