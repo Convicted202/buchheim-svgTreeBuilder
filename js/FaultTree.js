@@ -178,7 +178,7 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers'], function(Helpers, Anima
             }
 
             var onWheelScroll = function(e) {
-                var delta = (e.wheelDelta) < 0 ? -0.5 : 0.5;
+                var delta = (e.deltaY) < 0 ? -0.5 : 0.5;
                 if (self.config.currentScale <= 1 && delta < 0) {
                     self.config.currentScale /= 2;
                 } else {
