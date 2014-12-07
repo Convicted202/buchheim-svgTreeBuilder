@@ -444,7 +444,6 @@ html, body {
 }
 
 circle, rect {
-  fill: whitesmoke;
   stroke: black;
   cursor: pointer;
 }

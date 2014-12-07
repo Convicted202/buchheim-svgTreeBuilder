@@ -1,21 +1,60 @@
 define(['Helper'], function(Helpers) {
 
     // TODO: implement element entity
-
     'use strict'
+
+    var svgNS = 'http://www.w3.org/2000/svg';
+
+    var SVGElement = function(node) {
+        this.svg = null;
+        this.id = Helpers.generateGuid();
+        this.node = node || document.createElementNS(svgNS, 'g');
+    }
+
+    /**
+      * @desc adds all attributes provided in attrs to element
+      * @param Object attrs - all attributes to attach, provided by key/value pairs
+      * @return void
+    */
+    SVGElement.prototype.addAttrs = function(attrs) {
+        if (typeof attrs != 'object') {
+            return;
+        }
+        for (var attr in attrs) {
+            if (attr === 'id') {
+                this.id = attrs[attr];
+            }
+            this.node.setAttribute(attr.toString(), attrs[attr]);
+        }
+
+        return this;
+    }
+
+    /**
+      * @desc applies gradient to element by provided gradient ID
+      * @param string gradientId - gradient ID to be applied
+      * @return void
+    */
+    SVGElement.prototype.applyGradient = function(gradientId) {
+        this.addAttrs({
+            'fill': 'url(#' + gradientId + ')'
+        });
+
+        return this;
+    }
+
     var SVG = function (surfaceElem) {
         var defs;
-        this.svgNS = 'http://www.w3.org/2000/svg';
         if (!surfaceElem) {
-            surfaceElem = document.createElementNS(this.svgNS, 'svg');
+            surfaceElem = document.createElementNS(svgNS, 'svg');
         }
         this.surface = surfaceElem;
         if (!(defs = surfaceElem.querySelector('defs'))) {
-            defs = document.createElementNS(this.svgNS, 'defs');
+            defs = document.createElementNS(svgNS, 'defs');
             this.surface.appendChild(defs);
         }
         this.defs = this.surface.querySelector('defs');
-        this.bufferNode = surfaceElem;
+        this.elementsCollection = [];
     }
 
     /**
@@ -35,6 +74,8 @@ define(['Helper'], function(Helpers) {
             }
             node = next;
         }
+
+        this.elementsCollection = [];
     }
 
     /**
@@ -52,6 +93,8 @@ define(['Helper'], function(Helpers) {
             }
             node = next;
         }
+
+        this.elementsCollection = [];
     }
 
     /**
@@ -90,20 +133,10 @@ define(['Helper'], function(Helpers) {
     }
 
     /**
-      * @desc adds all attributes provided in attrs to element provided in elem
-      * @param Element/HTMLElement elem - element to attach attrs to
-      * @param Object attrs - all attributes to attach, provided by key/value pairs
+      * @desc adds new entry of linear gradient to defs element
+      * @param object objExpose - object with key/value pairs to form the gradient
       * @return void
     */
-    SVG.prototype.addAttrs = function(elem, attrs) {
-        if (typeof attrs != 'object') {
-            return;
-        }
-        for (var attr in attrs) {
-            elem.setAttribute(attr.toString(), attrs[attr]);
-        }
-    }
-
     SVG.prototype.defineLinearGradient = function(objExpose) {
         var template = [
                 '<linearGradient id="${id}" spreadMethod="pad" gradientTransform="rotate(${rotationAngle})">',
@@ -124,10 +157,10 @@ define(['Helper'], function(Helpers) {
       * @param double h - height
       * @param double rx - x of border radius
       * @param double ry - y of border radius
-      * @return void
+      * @return SVGElement Created rounded rectangle
     */
-    SVG.prototype.roundRect = function(x, y, w, h, rx, ry, id, gradientId) {
-        var rect = document.createElementNS(this.svgNS, 'rect'),
+    SVG.prototype.roundRect = function(x, y, w, h, rx, ry) {
+        var rect = new SVGElement(document.createElementNS(svgNS, 'rect')),
             attrObj;
 
         attrObj = {
@@ -136,19 +169,17 @@ define(['Helper'], function(Helpers) {
             'rx': rx,
             'ry': ry,
             'width': w,
-            'height': h,
-            'id': id
+            'height': h
         }
 
-        if (gradientId) {
-            Helpers.extend(attrObj, {
-                'fill': 'url(#' + gradientId + ')'
-            })
-        }
+        rect.addAttrs(attrObj);
+        rect.svg = this.surface;
 
-        this.addAttrs(rect, attrObj);
+        this.elementsCollection.push(rect);
 
-        this.surface.appendChild(rect);
+        this.surface.appendChild(rect.node);
+
+        return rect;
     }
 
     /**
@@ -157,19 +188,23 @@ define(['Helper'], function(Helpers) {
       * @param double y1
       * @param double x2
       * @param double y2
-      * @return void
+      * @return SVGElement Created line
     */
     SVG.prototype.line = function(x1, y1, x2, y2) {
-        var line = document.createElementNS(this.svgNS, 'line');
+        var line = new SVGElement(document.createElementNS(svgNS, 'line'));
 
-        this.addAttrs(line, {
+        line.addAttrs({
             'x1': x1,
             'y1': y1,
             'x2': x2,
             'y2': y2
         });
+        line.svg = this.surface;
 
-        this.surface.appendChild(line);
+        this.elementsCollection.push(line);
+        this.surface.appendChild(line.node);
+
+        return line;
     }
 
     /**
@@ -178,18 +213,26 @@ define(['Helper'], function(Helpers) {
       * @param double y1 - the beginning point's y value
       * @param double x2 - the ending point's x value
       * @param double y2 - the ending point's y value
-      * @return void
+      * @return SVGElement Created Bezier curve
     */
     SVG.prototype.simpleBezier = function(x1, y1, x2, y2) {
-        var path = document.createElementNS(this.svgNS, 'path'),
+        var path = new SVGElement(document.createElementNS(svgNS, 'path')),
             cmd = [];
 
         cmd.push('M' + x1 + ',' + y1);
         cmd.push('C' + x1 + ',' + y2);
         cmd.push(x2 + ',' + (y1 + (y1 - y2) / 10));
         cmd.push(x2 + ',' + y2);
-        path.setAttribute('d', cmd.join(' '));
-        this.surface.appendChild(path);
+        path.addAttrs({
+            'd': cmd.join(' ')
+        });
+
+        path.svg = this.surface;
+
+        this.elementsCollection.push(path);
+        this.surface.appendChild(path.node);
+
+        return path;
     }
 
     return SVG;
