@@ -15,6 +15,15 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers'], function(Helpers, Anima
         this.nodesCollection = [];
         this.svgSurface = new SVG(surface);
 
+        this.svgSurface.defineLinearGradient({
+            id: 'LinearGradient1',
+            //rotationAngle: '45',
+            offset1: '0%',
+            offset2: '100%',
+            stopColor1: '#85B5C7',
+            stopColor2: '#f0f0f0'
+        });
+
         this.config = {
              siblingSeparation : 40,
              treeTop: 80,
@@ -524,7 +533,8 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers'], function(Helpers, Anima
                             center.y - self.config.inputHeight * self.config.currentScale / 2,
                             self.config.inputWidth * self.config.currentScale,
                             self.config.inputHeight * self.config.currentScale,
-                            5);
+                            5,
+                            'LinearGradient1');
 
             });
 

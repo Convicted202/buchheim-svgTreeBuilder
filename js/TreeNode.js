@@ -188,7 +188,7 @@ define(['Helper'], function(Helpers) {
             }
         },
 
-        draw: function(x, y, w, h, r) {
+        draw: function(x, y, w, h, r, gradientId) {
             // if (!this.surface) {
             //     return false;
             // }
@@ -196,7 +196,7 @@ define(['Helper'], function(Helpers) {
             // if (!this.begX && !this.begY) {
 
                 //this.surface.circle(x, y, r).attr({id: this._id});
-                this.surface.roundRect(x, y, w, h, r, r, this._id);
+                this.surface.roundRect(x, y, w, h, r, r, this._id, gradientId);
             //     return false;
             // }
             // if (!this.addToX) {

@@ -1,23 +1,29 @@
-define([], function() {
+define(['Helper'], function(Helpers) {
 
     // TODO: implement element entity
 
     'use strict'
     var SVG = function (surfaceElem) {
+        var defs;
         this.svgNS = 'http://www.w3.org/2000/svg';
         if (!surfaceElem) {
             surfaceElem = document.createElementNS(this.svgNS, 'svg');
         }
         this.surface = surfaceElem;
+        if (!(defs = surfaceElem.querySelector('defs'))) {
+            defs = document.createElementNS(this.svgNS, 'defs');
+            this.surface.appendChild(defs);
+        }
+        this.defs = this.surface.querySelector('defs');
         this.bufferNode = surfaceElem;
     }
 
     /**
-      * @desc clears (removes all nodes of) current surface
+      * @desc clears (removes all nodes of) current surface + all defs
       * @return void
     */
-    SVG.prototype.clearSurface = function clear() {
-        var node = this.bufferNode.firstChild,
+    SVG.prototype.clearAll = function clear() {
+        var node = arguments[0] || this.surface.firstChild,
             next;
 
         while (node) {
@@ -26,6 +32,40 @@ define([], function() {
                 node.parentNode.removeChild(node);
             } else {
                 clear.call({ bufferNode: node });
+            }
+            node = next;
+        }
+    }
+
+    /**
+      * @desc clears (removes all nodes of) current surface, leaves all existing defs
+      * @return void
+    */
+    SVG.prototype.clearSurface = function clear() {
+        var node = this.surface.firstChild,
+            next;
+
+        while (node) {
+            next = node.nextSibling;
+            if (node.tagName != "defs") {
+                node.parentNode.removeChild(node);
+            }
+            node = next;
+        }
+    }
+
+    /**
+      * @desc clears (removes all nodes of) current surface, leaves all existing defs
+      * @return void
+    */
+    SVG.prototype.clearDefs = function clear() {
+        var node = this.defs.firstChild,
+            next;
+
+        while (node) {
+            next = node.nextSibling;
+            if (node.tagName != "defs") {
+                node.parentNode.removeChild(node);
             }
             node = next;
         }
@@ -64,6 +104,18 @@ define([], function() {
         }
     }
 
+    SVG.prototype.defineLinearGradient = function(objExpose) {
+        var template = [
+                '<linearGradient id="${id}" spreadMethod="pad" gradientTransform="rotate(${rotationAngle})">',
+                    '<stop offset="${offset1}" stop-color="${stopColor1}"/>',
+                    '<stop offset="${offset2}" stop-color="${stopColor2}"/>',
+                '</linearGradient>'
+            ]
+
+        template = Helpers.template(template.join(''), objExpose);
+        this.defs.innerHTML += template;
+    }
+
     /**
       * @desc draws round rect
       * @param double x - left coord
@@ -74,10 +126,11 @@ define([], function() {
       * @param double ry - y of border radius
       * @return void
     */
-    SVG.prototype.roundRect = function(x, y, w, h, rx, ry, id) {
-        var rect = document.createElementNS(this.svgNS, 'rect');
+    SVG.prototype.roundRect = function(x, y, w, h, rx, ry, id, gradientId) {
+        var rect = document.createElementNS(this.svgNS, 'rect'),
+            attrObj;
 
-        this.addAttrs(rect, {
+        attrObj = {
             'x': x,
             'y': y,
             'rx': rx,
@@ -85,7 +138,15 @@ define([], function() {
             'width': w,
             'height': h,
             'id': id
-        });
+        }
+
+        if (gradientId) {
+            Helpers.extend(attrObj, {
+                'fill': 'url(#' + gradientId + ')'
+            })
+        }
+
+        this.addAttrs(rect, attrObj);
 
         this.surface.appendChild(rect);
     }

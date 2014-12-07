@@ -89,7 +89,36 @@ define([], function() {
             return  s4() + s4() + '-' +
                     s4() + '-' + s4() + '-' +
                     s4() + '-' + s4() + s4() + s4();
+        },
+
+        /**
+          * @desc gives easy way to provide templates in project
+          * @param string templateStr - string definition of a template
+          * @param object objExpose - object with provided parameters to replace templateStr entities with
+          * @return string - new string with changed entities
+        */
+        template: function(templateStr, objExpose) {
+            var index, exceededIndexes,
+                // regexp to split string into attributes
+                attributeReg = /\s|\/?\>|\<\/?/,
+                // regexp to find entities like ${entity}
+                entityReg = /\$\{.*\}/;
+
+            for (index in objExpose) {
+                templateStr = templateStr.replace('${' + index + '}', objExpose[index]);
+            }
+
+            exceededIndexes = templateStr.split(attributeReg);
+
+            Array.prototype.forEach.call(exceededIndexes, function(elem, index) {
+                if (elem.match(entityReg)) {
+                    templateStr = templateStr.replace(elem, '');
+                }
+            });
+
+            return templateStr;
         }
+
     }
 
     return Helpers;
