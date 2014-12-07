@@ -3,7 +3,8 @@ define(['Helper'], function(Helpers) {
     // TODO: implement element entity
     'use strict'
 
-    var svgNS = 'http://www.w3.org/2000/svg';
+    var svgNS = 'http://www.w3.org/2000/svg',
+        arrowEndMarker = '<marker id="Triangle" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="6" markerHeight="6" orient="auto">';
 
     var SVGElement = function(node) {
         this.svg = null;

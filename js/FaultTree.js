@@ -30,8 +30,8 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers'], function(Helpers, Anima
              treeLeft: surface.clientWidth - surface.parentNode.clientWidth / 2,
              logicInputRadius: 50,
              r: 10,
-             inputHeight: 30,
-             inputWidth: 50,
+             inputHeight: 70,
+             inputWidth: 90,
 
              currentScale: 1,
              offsetX: 0,
@@ -199,14 +199,25 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers'], function(Helpers, Anima
             var canvasDrag = {
                 mousedown: function(e) {
                     downFlag = true;
-                    offsetStart = { x: e.clientX, y: e.clientY };
+                    if (e.touches) {
+                        offsetStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                    } else {
+                        offsetStart = { x: e.clientX, y: e.clientY };
+                    }
                 },
                 mousemove: function(e) {
                     if (downFlag) {
-                        self.config.offsetX += e.clientX - offsetStart.x;
-                        self.config.offsetY += e.clientY - offsetStart.y;
+                        if (e.touches) {
+                            self.config.offsetX += e.touches[0].clientX - offsetStart.x;
+                            self.config.offsetY += e.touches[0].clientY - offsetStart.y;
 
-                        offsetStart = { x: e.clientX, y: e.clientY };
+                            offsetStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                        } else {
+                            self.config.offsetX += e.clientX - offsetStart.x;
+                            self.config.offsetY += e.clientY - offsetStart.y;
+
+                            offsetStart = { x: e.clientX, y: e.clientY };
+                        }
                         self.drawAllNodes();
                     }
                 },
@@ -221,6 +232,10 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers'], function(Helpers, Anima
             this.svgSurface.addEventListener('mousedown', canvasDrag.mousedown);
             this.svgSurface.addEventListener('mousemove', canvasDrag.mousemove);
             this.svgSurface.addEventListener('mouseup', canvasDrag.mouseup);
+
+            this.svgSurface.addEventListener('touchstart', canvasDrag.mousedown);
+            this.svgSurface.addEventListener('touchmove', canvasDrag.mousemove);
+            this.svgSurface.addEventListener('touchend', canvasDrag.mouseup);
         },
 
         /**
