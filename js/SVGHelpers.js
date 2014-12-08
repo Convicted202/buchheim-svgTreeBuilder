@@ -27,9 +27,40 @@ define(['Helper'], function(Helpers) {
             }
             this.node.setAttribute(attr.toString(), attrs[attr]);
         }
-
         return this;
     }
+
+    // SVGElement.prototype.addStyles = function(styles) {
+    //     if (typeof styles != 'object') {
+    //         return;
+    //     }
+    //     var completeStyle = this.node.getAttribute('style') || '';
+    //     for (var style in styles) {
+    //         completeStyle += style + ': ' + styles[style] + '; ';
+    //     }
+
+    //     this.node.setAttribute('style', completeStyle);
+    //     return this;
+    // }
+
+    // SVGElement.prototype.removeStyles = function(styles) {
+    //     if (typeof styles != 'object') {
+    //         return;
+    //     }
+    //     var completeStyle = (this.node.getAttribute('style') || '').split(';');
+
+    //     for (var style in styles) {
+    //         for (var i = 0, n = completeStyle.length; i < n; i++) {
+    //             if (completeStyle[i].match(style)) {
+    //                 completeStyle.pop(i);
+    //                 n--;
+    //             }
+    //         }
+    //     }
+
+    //     this.node.setAttribute('style', completeStyle.join(';'));
+    //     return this;
+    // }
 
     /**
       * @desc applies gradient to element by provided gradient ID
@@ -44,6 +75,27 @@ define(['Helper'], function(Helpers) {
         return this;
     }
 
+    SVGElement.prototype.getBoundingRect = function() {
+        var box = this.node.getBoundingClientRect(),
+            width = box.right - box.left,
+            height = box.bottom - box.top;
+
+        return {
+            x: box.left - width / 2,
+            y: box.top - height / 2,
+            width: width * 2,
+            height: height * 2
+        }
+    }
+
+    SVGElement.prototype.show = function() {
+        this.node.classList.remove('hidden');
+    }
+
+    SVGElement.prototype.hide = function() {
+        this.node.classList.add('hidden');
+    }
+
     var SVG = function (surfaceElem) {
         var defs;
         if (!surfaceElem) {
@@ -56,6 +108,8 @@ define(['Helper'], function(Helpers) {
         }
         this.defs = this.surface.querySelector('defs');
         this.elementsCollection = [];
+
+        this.selectionRect = null;
     }
 
     /**
@@ -147,7 +201,61 @@ define(['Helper'], function(Helpers) {
             ]
 
         template = Helpers.template(template.join(''), objExpose);
+
         this.defs.innerHTML += template;
+    }
+
+    SVG.prototype.getElementById = function(id) {
+        var element = null;
+        [].forEach.call(this.elementsCollection, function(elem) {
+            if (elem.id === id) {
+                element = elem;
+            }
+        });
+        return element;
+    }
+
+    SVG.prototype.moveSelectionRect = function(elem) {
+        var boxAttrs;
+
+        if (typeof elem === 'string') {
+            elem = this.getElementById(elem);
+        }
+
+        if (!this.selectionRect) {
+            this.selectionRect = new SVGElement(document.createElementNS(svgNS, 'rect'));
+            this.selectionRect.addAttrs({
+                'id': 'selectionRect',
+                'fill': 'none',
+                'stroke': 'black',
+                'stroke-width': '2',
+                'stroke-dasharray':'10, 10'
+            });
+        }
+
+        this.surface.appendChild(this.selectionRect.node);
+
+        boxAttrs = elem.getBoundingRect();
+        this.selectionRect.addAttrs(boxAttrs);
+        this.showSelectionRect();
+    }
+
+    SVG.prototype.reflowSelectionRect = function() {
+        if (this.selectionRect) {
+            this.surface.appendChild(this.selectionRect.node);
+        }
+    }
+
+    SVG.prototype.hideSelectionRect = function() {
+        if (this.selectionRect) {
+            this.selectionRect.hide();
+        }
+    }
+
+    SVG.prototype.showSelectionRect = function() {
+        if (this.selectionRect) {
+            this.selectionRect.show();
+        }
     }
 
     /**

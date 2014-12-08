@@ -1,4 +1,4 @@
-define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers'], function(Helpers, Animator, TreeNode, SVG) {
+define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], function(Helpers, Animator, TreeNode, SVG, $) {
 
     'use strict'
 
@@ -57,6 +57,7 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers'], function(Helpers, Anima
             this.jsonList = Helpers.extend({}, data);
             this.treeLayout();
             this.initHandlers();
+            this.displayTreeData();
         },
 
         /**
@@ -65,6 +66,33 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers'], function(Helpers, Anima
         */
         getJsonTree: function() {
             return JSON.stringify(this.jsonTree);
+        },
+
+        displayTreeData: function() {
+            var container = $.one('#treeDisplayContainer'),
+                self = this,
+                divs = [
+                    { name: 'Tree Name', value: 'Basic Tree' },
+                    { name: 'Nodes count', value: self.nodesCollection.length },
+                    { name: 'root node', value: self.apexNode },
+                    { name: 'max depth', value: (function() {
+                        var depth = 0;
+                        [].forEach.call(self.nodesCollection, function(node) {
+                            if (node.depth > depth) {
+                                depth = node.depth;
+                            }
+                        });
+                        return depth + 1;
+                    })() }
+                ];
+
+            container.innerHTML = '';
+
+            [].forEach.call(divs, function(divObj) {
+                var div = document.createElement('div');
+                div.appendChild(document.createTextNode(divObj.name + ': ' + divObj.value));
+                container.appendChild(div);
+            });
         },
 
         /**
@@ -162,27 +190,46 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers'], function(Helpers, Anima
                             break;
                         }
                     }
-                    pIds.push(el._id);
-                    while (el = el.nodeParent) {
-                        pIds.push(el._id);
-                    }
-                    //console.log(pIds);
 
-                    receiver = self.jsonTree
-                    for (var i = pIds.length - 2; i >= 0; i--) {
-                        for (var j = 0; j < receiver.children.length; j++) {
-                            if (receiver.children[j].id === pIds[i]) {
-                                if (i === 0) {
-                                    //console.log(receiver.children[j]);
-                                    receiver.children.pop(j);
-                                } else {
-                                    receiver = receiver.children[j];
-                                }
-                                break;
-                            }
+                    var container = $.one('#nodeDisplayContainer');
+                    container.innerHTML = '';
+
+                    for (var ind in el) {
+                        if (typeof el[ind] !== 'function') {
+                            var div = document.createElement('div'),
+                                text = document.createTextNode(ind + ': ' + el[ind]);
+
+                            div.appendChild(text);
+                            container.appendChild(div);
                         }
                     }
-                    self.treeLayout();
+
+                    self.svgSurface.moveSelectionRect(el._id)
+
+                    // pIds.push(el._id);
+                    // while (el = el.nodeParent) {
+                    //     pIds.push(el._id);
+                    // }
+                    // //console.log(pIds);
+
+                    // receiver = self.jsonTree;
+                    // for (var i = pIds.length - 2; i >= 0; i--) {
+                    //     for (var j = 0; j < receiver.children.length; j++) {
+                    //         if (receiver.children[j].id === pIds[i]) {
+                    //             if (i === 0) {
+                    //                 //console.log(receiver.children[j]);
+                    //                 receiver.children.pop(j);
+                    //             } else {
+                    //                 receiver = receiver.children[j];
+                    //             }
+                    //             break;
+                    //         }
+                    //     }
+                    // }
+                    // self.treeLayout();
+
+                } else {
+                    self.svgSurface.hideSelectionRect();
                 }
             }
 
@@ -552,6 +599,8 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers'], function(Helpers, Anima
                             'LinearGradient1');
 
             });
+
+            //self.svgSurface.reflowSelectionRect();
 
             function drawConnections(root, conType) {
                 var rootCenter = self.getNodeCenter(root);

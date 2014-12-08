@@ -529,6 +529,36 @@ html, body {
     background-color: #F7F7F7;
 }
 
+#bottomleftbar {
+    width: 48%;
+    height: 100%;
+    display: inline-block;
+    padding: 20px 10px 10px 10px;
+    vertical-align: top;
+    float: left;
+}
+
+#bottomrightbar {
+    width: 48%;
+    height: 100%;
+    display: inline-block;
+    padding: 20px 10px 10px 10px;
+    vertical-align: top;
+    float: right;
+}
+
+.innerContainer {
+    height: 100%;
+    width: 100%;
+    background-color: rgb(239, 239, 239);
+    padding: 5px;
+    overflow: auto;
+
+    word-spacing: normal;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
 .noselect {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -538,7 +568,13 @@ html, body {
     user-select: none;
 }
 
-circle, rect {
+rect#selectionRect {
+    &.hidden {
+        display: none;
+    }
+}
+
+circle, rect:not(#selectionRect) {
     //fill: whitesmoke;
     stroke: black;
     cursor: pointer;

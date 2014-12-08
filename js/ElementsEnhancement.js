@@ -26,23 +26,23 @@ define([], function() {
         return new RegExp('(\\s|^)' + className + '(\\s|$)').test(target.className);
     }
 
-    HTMLElement.prototype.hasClass = function(className) {
+    Element.prototype.hasClass = function(className) {
         return hasClass(this, className);
     }
 
-    HTMLElement.prototype.addClass = function(className) {
+    Element.prototype.addClass = function(className) {
         this.classList.add(className);
     }
 
-    HTMLElement.prototype.removeClass = function(className) {
+    Element.prototype.removeClass = function(className) {
         this.classList.remove(className);
     }
 
-    HTMLElement.prototype.toggleClass = function(className) {
+    Element.prototype.toggleClass = function(className) {
         this.classList.toggle(className);
     }
 
-    HTMLElement.prototype.getNumericStyle = function(styleName) {
+    Element.prototype.getNumericStyle = function(styleName) {
         return +window.getComputedStyle(this, null).getPropertyValue(styleName).replace(/[^\d]+/, '');
     }
 
