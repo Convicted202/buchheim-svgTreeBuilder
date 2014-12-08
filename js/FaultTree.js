@@ -68,31 +68,49 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
             return JSON.stringify(this.jsonTree);
         },
 
+        /**
+          * @desc displays common tree data
+          * @return void
+        */
         displayTreeData: function() {
             var container = $.one('#treeDisplayContainer'),
                 self = this,
                 divs = [
                     { name: 'Tree Name', value: 'Basic Tree' },
                     { name: 'Nodes count', value: self.nodesCollection.length },
-                    { name: 'root node', value: self.apexNode },
-                    { name: 'max depth', value: (function() {
-                        var depth = 0;
-                        [].forEach.call(self.nodesCollection, function(node) {
-                            if (node.depth > depth) {
-                                depth = node.depth;
-                            }
-                        });
-                        return depth + 1;
-                    })() }
-                ];
+                    { name: 'Root node ID', value: self.apexNode._id },
+                    { name: 'Max depth', value: self.getMaxDepth() }
+                ],
+                template = [
+                    '<div>',
+                        '<strong>${name} : </strong>',
+                        '${value}',
+                    '</div>'
+                ].join(''),
+                html = '';
 
             container.innerHTML = '';
 
             [].forEach.call(divs, function(divObj) {
-                var div = document.createElement('div');
-                div.appendChild(document.createTextNode(divObj.name + ': ' + divObj.value));
-                container.appendChild(div);
+                html += Helpers.template(template, divObj);
             });
+
+            container.innerHTML = html;
+        },
+
+        /**
+          * @desc returns maximal depth of a tree
+          * @return int
+        */
+        getMaxDepth: function() {
+            var depth = 0;
+
+            [].forEach.call(this.nodesCollection, function(node) {
+                if (node.depth > depth) {
+                    depth = node.depth;
+                }
+            });
+            return depth + 1;
         },
 
         /**
@@ -183,7 +201,9 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
 
             var removeNode = function(e) {
                 if (e.target.nodeName === 'rect') {
-                    var id = e.target.id, el = null, pIds = [];
+                    var id = e.target.id, el = null, pIds = [],
+                        container = $.one('#nodeDisplayContainer');
+
                     for (var i = 0; i < self.nodesCollection.length; i++) {
                         if (id === self.nodesCollection[i]._id) {
                             el = self.nodesCollection[i];
@@ -191,18 +211,7 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
                         }
                     }
 
-                    var container = $.one('#nodeDisplayContainer');
-                    container.innerHTML = '';
-
-                    for (var ind in el) {
-                        if (typeof el[ind] !== 'function') {
-                            var div = document.createElement('div'),
-                                text = document.createTextNode(ind + ': ' + el[ind]);
-
-                            div.appendChild(text);
-                            container.appendChild(div);
-                        }
-                    }
+                    el.displayData(container);
 
                     self.svgSurface.moveSelectionRect(el._id)
 
@@ -579,6 +588,10 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
                     }
         },
 
+        /**
+          * @desc draws all nodes on attached surface
+          * @return void
+        */
         drawAllNodes: function() {
             var self = this,
                 path, cmd = [];

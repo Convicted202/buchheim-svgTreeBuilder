@@ -180,12 +180,49 @@ define(['Helper'], function(Helpers) {
             this.surface = surface;
         },
 
-        checkAddToY: function() {
-            if (this.y - this.begY > this.x - this.begX) {
-                this.addToX = 1;
-            } else {
-                this.addToX = -1;
-            }
+        /**
+          * @desc returns array of all child IDs
+          * @return array
+        */
+        getChildrenListId: function() {
+            var ret = [];
+
+            [].forEach.call(this.nodeChildren, function(child) {
+                ret.push(child._id);
+            });
+
+            return ret;
+        },
+
+        /**
+          * @desc add selected data to container
+          * @param Element container - container which will contain all data
+          * @return void
+        */
+        displayData: function(container) {
+            var data = [
+                    { name: 'id', value: this._id },
+                    { name: 'parentId', value: this._pid },
+                    { name: 'depth', value: this.depth },
+                    { name: 'siblingNumber', value: this.number },
+                    { name: 'childrenCount', value: this.getChildrenCount() },
+                    { name: 'childrenList', value: '[' + this.getChildrenListId().join(', ') + ']'}
+                ],
+                template = [
+                    '<div>',
+                        '<strong>${name} : </strong>',
+                        '${value}',
+                    '</div>'
+                ].join(''),
+                html = '';
+
+            container.innerHTML = '';
+
+            [].forEach.call(data, function(divObj) {
+                html += Helpers.template(template, divObj);
+            });
+
+            container.innerHTML = html;
         },
 
         draw: function(x, y, w, h, r, gradientId) {
