@@ -54,6 +54,9 @@ html, body {
   position: relative;
   background-color: #e2e2e2;
   z-index: 1;
+  -webkit-flex: 0 0 auto;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
 }
 #leftbar.shrinkedHorizontal #searchContainer, #leftbar.shrinkedHorizontal #searchField {
   padding-left: 0;
@@ -244,14 +247,17 @@ html, body {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -ms-flex: auto;
-  flex-grow: 1;
+  -webkit-flex: 1 0 0px;
+  -ms-flex: 1 0 0px;
+  flex: 1 0 0px;
   flex-direction: column;
-  -ms-flex-direction: column-reverse;
+  -ms-flex-direction: column;
 }
 
 #righttopbar {
-  flex-grow: 1;
+  -webkit-flex: 1 0 auto;
+  -ms-flex: 1 0 auto;
+  flex: 1 0 auto;
   order: 1;
   -ms-flex-order: 1;
 }
@@ -262,6 +268,9 @@ html, body {
   background-color: #d5d5d5;
   order: 2;
   -ms-flex-order: 2;
+  -webkit-flex: 0 0 auto;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
 }
 
 .closeButton {
