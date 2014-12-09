@@ -226,8 +226,13 @@ define(['Helper'], function(Helpers) {
         },
 
         draw: function(x, y, w, h, r, gradientId) {
-            this.surface.roundRect(x, y, w, h, r, r).addAttrs({
-                'id': this._id
+            // this.surface.roundRect(x, y, w, h, r, r).addAttrs({
+            //     'id': this._id
+            // }).applyGradient(gradientId);
+
+            this.surface.group().addRect(0, 0, w, h, r, r).addText(this._id, w / 2, 10, w / 8).addAttrs({
+                'id': this._id,
+                'transform': 'translate(' + x + ',' + y + ')'
             }).applyGradient(gradientId);
         }
     }

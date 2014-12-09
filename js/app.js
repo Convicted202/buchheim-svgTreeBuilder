@@ -2,7 +2,7 @@ require(['FaultTree', 'defaults', 'ElementsEnhancement', 'Animator'], function(F
 
     'use strict'
 
-    var data = defaultData[2],
+    var data = defaultData[3],
         treeListContainer = $.one('#treeContainer'),
         tree = new FaultTree($.one('#surface'));
 

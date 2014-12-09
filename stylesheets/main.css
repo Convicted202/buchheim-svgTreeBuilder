@@ -502,3 +502,7 @@ line {
 path {
   stroke: black;
 }
+
+text {
+  stroke: #000;
+}

@@ -1,6 +1,8 @@
 define(['Helper'], function(Helpers) {
 
     'use strict'
+// TODO: this code should be optimized ASAP and all functionality is completed
+
 
     var svgNS = 'http://www.w3.org/2000/svg',
         arrowEndMarker = '<marker id="Triangle" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="6" markerHeight="6" orient="auto">';
@@ -308,7 +310,7 @@ define(['Helper'], function(Helpers) {
         }
 
         rect.addAttrs(attrObj);
-        rect.svg = this.surface;
+        //rect.svg = this.surface;
 
         this.elementsCollection.push(rect);
 
@@ -318,17 +320,43 @@ define(['Helper'], function(Helpers) {
     }
 
     SVG.prototype.group = function() {
-        var group = new SVGElement();
+        var group = new SVGElement(),
+            self = this;
+
+        function groupAddElement(group, elName, obj) {
+            var el = new SVGElement(document.createElementNS(svgNS, elName));
+
+            el.addAttrs(obj);
+
+            group.node.appendChild(el.node);
+            return el;
+        }
 
         group.addPath = function (pathString, addMarker) {
-            var path = new SVGElement(document.createElementNS(svgNS, 'path'));
-            path.addAttrs({
+            groupAddElement(this, 'path', {
                 'd': pathString,
                 'stroke-width': '1',
                 'shape-rendering': 'crispEdges',
                 'marker-end': addMarker ? 'url(#triangle)' : ''
-            });
-            this.node.appendChild(path.node);
+            })
+
+            return this;
+        }
+
+        group.addRect = function (x, y, w, h, rx, ry) {
+            self.roundRect.apply({
+                surface: this.node,
+                elementsCollection: self.elementsCollection
+            }, arguments);
+
+            return this;
+        }
+
+        group.addText = function (baseText, x, y, maxChars, lineHeight) {
+            self.text.apply({
+                surface: this.node,
+                elementsCollection: self.elementsCollection
+            }, arguments);
 
             return this;
         }
@@ -338,6 +366,65 @@ define(['Helper'], function(Helpers) {
 
         return group;
     }
+
+    SVG.prototype.text = function (baseText, x, y, maxChars, lineHeight) {
+        var text = new SVGElement(document.createElementNS(svgNS, 'text')),
+            line = '', testline,
+            tspan, ttext, counter = 0;
+        text.addAttrs({
+            'x': x,
+            'y': y,
+            'font-size': '10',
+            'text-anchor': 'middle'
+        });
+
+        maxChars = maxChars || 10;
+        lineHeight = lineHeight || 10;
+
+        for (var i = 0, n = baseText.length; i < n && counter < 3; i++) {
+
+            testline = line + baseText[i];
+            if (testline.length > maxChars)
+            {
+                tspan = new SVGElement(document.createElementNS(svgNS, 'tspan'));
+                tspan.addAttrs({
+                    'x': x,
+                    'y': y
+                });
+                if (counter === 2) {
+                    line += '...';
+                }
+                ttext = document.createTextNode(line);
+                tspan.node.appendChild(ttext);
+                text.node.appendChild(tspan.node);
+
+                line = baseText[i];
+                y += lineHeight;
+                counter++;
+            }
+            else {
+                line = testline;
+            }
+        }
+
+        if (baseText.length <= maxChars) {
+            tspan = new SVGElement(document.createElementNS(svgNS, 'tspan'));
+            tspan.addAttrs({
+                'x': x,
+                'y': y
+            });
+
+            ttext = document.createTextNode(line);
+            tspan.node.appendChild(ttext);
+            text.node.appendChild(tspan.node);
+        }
+
+        this.elementsCollection.push(text);
+        this.surface.appendChild(text.node);
+
+        return text;
+    }
+
 
     /**
       * @desc draws line
@@ -356,7 +443,7 @@ define(['Helper'], function(Helpers) {
             'x2': x2,
             'y2': y2
         });
-        line.svg = this.surface;
+        //line.svg = this.surface;
 
         this.elementsCollection.push(line);
         this.surface.appendChild(line.node);
@@ -385,7 +472,7 @@ define(['Helper'], function(Helpers) {
             'fill': 'none'
         });
 
-        path.svg = this.surface;
+        //path.svg = this.surface;
 
         this.elementsCollection.push(path);
         this.surface.appendChild(path.node);

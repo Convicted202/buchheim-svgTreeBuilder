@@ -31,7 +31,7 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
         this.config = {
              siblingSeparation : 40,
              treeTop: 80,
-             treeLeft: surface.clientWidth - surface.parentNode.clientWidth / 2,
+             treeLeft: document.body.clientWidth - surface.parentNode.clientWidth / 2,
              logicInputRadius: 50,
              r: 10,
              inputHeight: 70,
@@ -604,7 +604,6 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
             drawConnections(this.apexNode, ConnectionType.POLYGONAL);
 
             Array.prototype.forEach.call(self.nodesCollection, function(node) {
-                //node.draw(x + node.x * k, y + node.depth * 50 * self.config.currentScale, self.config.logicInputRadius * self.config.currentScale);
                 var center = self.getNodeCenter(node);
 
                 node.draw(  center.x - self.config.inputWidth * self.config.currentScale / 2,
@@ -613,7 +612,6 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
                             self.config.inputHeight * self.config.currentScale,
                             5,
                             'LinearGradient1');
-
             });
 
             //self.svgSurface.reflowSelectionRect();
