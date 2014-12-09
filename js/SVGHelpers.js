@@ -9,6 +9,8 @@ define(['Helper'], function(Helpers) {
         this.svg = null;
         this.id = Helpers.generateGuid();
         this.node = node || document.createElementNS(svgNS, 'g');
+
+        return this;
     }
 
     /**
@@ -51,10 +53,10 @@ define(['Helper'], function(Helpers) {
             height = box.bottom - box.top;
 
         return {
-            x: box.left - width / 2,
-            y: box.top - height / 2,
-            width: width * 2,
-            height: height * 2
+            x: box.left - width / 4,
+            y: box.top - height / 4,
+            width: width * 1.5,
+            height: height * 1.5
         }
     }
 
@@ -67,7 +69,14 @@ define(['Helper'], function(Helpers) {
     }
 
     var SVG = function (surfaceElem) {
-        var defs;
+        var defs, trianglePath;
+
+        trianglePath = new SVGElement(document.createElementNS(svgNS, 'path')).
+            addAttrs({
+                'd': 'M 0 0 L 10 5 L 0 10 z',
+                'fill': 'black'
+            });
+
         if (!surfaceElem) {
             surfaceElem = document.createElementNS(svgNS, 'svg');
         }
@@ -80,6 +89,20 @@ define(['Helper'], function(Helpers) {
         this.elementsCollection = [];
 
         this.selectionRect = null;
+        this.arrowEndMarker = new SVGElement(document.createElementNS(svgNS, 'marker')).
+            addAttrs({
+                'id': 'triangle',
+                'viewBox': '0 0 10 10',
+                'refX': '1',
+                'refY': '5',
+                'markerWidth': '8',
+                'markerHeight': '8',
+                'orient': 'auto'
+            });
+
+        this.arrowEndMarker.node.appendChild(trianglePath.node);
+
+        this.markerUsed = false;
     }
 
     /**
@@ -187,6 +210,15 @@ define(['Helper'], function(Helpers) {
         })
 
         this.defs.appendChild(gradient.node);
+
+        return this;
+    }
+
+    SVG.prototype.defineEndMarker = function() {
+        this.defs.appendChild(this.arrowEndMarker.node);
+        this.markerUsed = true;
+
+        return this;
     }
 
     /**
@@ -222,8 +254,8 @@ define(['Helper'], function(Helpers) {
                 'id': 'selectionRect',
                 'fill': 'none',
                 'stroke': 'black',
-                'stroke-width': '2',
-                'stroke-dasharray':'10, 10'
+                'stroke-width': '1',
+                'stroke-dasharray':'10, 5, 5, 10'
             });
         }
 
@@ -283,6 +315,27 @@ define(['Helper'], function(Helpers) {
         this.surface.appendChild(rect.node);
 
         return rect;
+    }
+
+    SVG.prototype.group = function() {
+        var group = new SVGElement();
+
+        group.addPath = function (pathString, addMarker) {
+            var path = new SVGElement(document.createElementNS(svgNS, 'path'));
+            path.addAttrs({
+                'd': pathString,
+                'stroke-width': '1',
+                'marker-end': addMarker ? 'url(#triangle)' : ''
+            });
+            this.node.appendChild(path.node);
+
+            return this;
+        }
+
+        this.elementsCollection.push(group);
+        this.surface.appendChild(group.node);
+
+        return group;
     }
 
     /**

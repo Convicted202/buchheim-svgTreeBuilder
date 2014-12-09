@@ -26,7 +26,7 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
                 offset: '100%',
                 stopColor: '#f0f0f0'
             }]
-        });
+        }).defineEndMarker();
 
         this.config = {
              siblingSeparation : 40,
@@ -37,7 +37,7 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
              inputHeight: 70,
              inputWidth: 90,
 
-             currentScale: 1,
+             currentScale: 0.5,
              offsetX: 0,
              offsetY: 0
         }
@@ -601,7 +601,7 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
 
             self.svgSurface.clearSurface();
 
-            drawConnections(this.apexNode, ConnectionType.STRAIGHT);
+            drawConnections(this.apexNode, ConnectionType.POLYGONAL);
 
             Array.prototype.forEach.call(self.nodesCollection, function(node) {
                 //node.draw(x + node.x * k, y + node.depth * 50 * self.config.currentScale, self.config.logicInputRadius * self.config.currentScale);
@@ -619,7 +619,21 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
             //self.svgSurface.reflowSelectionRect();
 
             function drawConnections(root, conType) {
-                var rootCenter = self.getNodeCenter(root);
+                var rootCenter = self.getNodeCenter(root),
+                    rootBottomCenterY, group;
+
+                if (conType === ConnectionType.POLYGONAL && root.getChildrenCount()) {
+                    rootBottomCenterY = rootCenter.y + self.config.inputHeight * self.config.currentScale / 2;
+
+                    group = self.svgSurface.group().addPath([
+                        'M' + rootCenter.x + ',' + rootBottomCenterY,
+                        'L' + rootCenter.x + ',' + (rootBottomCenterY + self.config.inputHeight * self.config.currentScale / 2)
+                    ].join(' ')).addPath([
+                        'M' + self.getNodeCenter(root.getLeftmostChild()).x + ',' + (rootBottomCenterY + self.config.inputHeight * self.config.currentScale / 2),
+                        'L' + self.getNodeCenter(root.getRightmostChild()).x + ',' + (rootBottomCenterY + self.config.inputHeight * self.config.currentScale / 2)
+                    ].join(' '));
+                }
+
                 Array.prototype.forEach.call(root.nodeChildren, function(node) {
                     if (node) {
                         var nodeCenter = self.getNodeCenter(node);
@@ -627,6 +641,11 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
                             self.svgSurface.simpleBezier(rootCenter.x, rootCenter.y, nodeCenter.x, nodeCenter.y);
                         } else if (conType === ConnectionType.STRAIGHT) {
                             self.svgSurface.line(rootCenter.x, rootCenter.y, nodeCenter.x, nodeCenter.y);
+                        } else if (conType === ConnectionType.POLYGONAL) {
+                            group.addPath([
+                                'M' + nodeCenter.x + ',' + (rootBottomCenterY + self.config.inputHeight * self.config.currentScale / 2),
+                                'L' + nodeCenter.x + ',' + (rootBottomCenterY + self.config.inputHeight * self.config.currentScale - 8)
+                            ].join(' '), true);
                         }
 
                         drawConnections(node, conType);

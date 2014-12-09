@@ -36,7 +36,7 @@ html, body {
     height: 100%;
     margin: 0;
     overflow: hidden;
-    -webkit-overflow-scrolling: touch;
+    //-webkit-overflow-scrolling: touch;
 }
 
 #container {
@@ -584,6 +584,10 @@ html, body {
     user-select: none;
 }
 
+svg > * {
+    shape-rendering: crispEdges;
+}
+
 rect#selectionRect {
     &.hidden {
         display: none;
@@ -602,9 +606,11 @@ circle, rect:not(#selectionRect) {
 
 line {
     stroke: black;
+    shape-rendering: crispEdges;
 }
 
 path {
-    fill: none;
+    //fill: none;
     stroke: black;
+    shape-rendering: crispEdges;
 }
