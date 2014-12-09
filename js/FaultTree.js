@@ -17,11 +17,15 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
 
         this.svgSurface.defineLinearGradient({
             id: 'LinearGradient1',
-            //rotationAngle: '45',
-            offset1: '0%',
-            offset2: '100%',
-            stopColor1: '#85B5C7',
-            stopColor2: '#f0f0f0'
+            rotationAngle: '45',
+            stopNodes: [{
+                offset: '0%',
+                stopColor: '#85B5C7'
+            },
+            {
+                offset: '100%',
+                stopColor: '#f0f0f0'
+            }]
         });
 
         this.config = {
@@ -316,21 +320,20 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
             text.tag = text.tag || 'span';
             text.class = text.class || '';
 
+            var template = {
+                start: '<${tag} class="${class} ${root}" data-id="${dataId}">',
+                end: '</${tag}>'
+            }
+
             function startTag(tag, first, dataId) {
-                var cl = '';
-                if (first) {
-                    cl = ' root';
-                }
-                dataId = dataId ? 'data-id="' + dataId + '"' : '';
-                tag = tag || {};
-                tag.tag = tag.tag || 'span';
-                tag.class = tag.class || 'default'
-                return '<' + tag.tag + ' class="' + tag.class + cl + '"' + dataId + '>';
+                Helpers.extend(tag, {
+                    root: (first ? 'root' : ''),
+                    dataId: (dataId ? dataId : '')
+                });
+                return Helpers.template(template.start, tag);
             }
             function endTag(tag) {
-                tag = tag || {};
-                tag.tag = tag.tag || 'span';
-                return '</' + tag.tag + '>';
+                return Helpers.template(template.end, tag);
             }
 
             function loop(root) {
@@ -341,7 +344,7 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
                 if (children && children.length) {
                     classList = ' expandible collapsed';
                 }
-                innerTag += startTag(text, false, root.id) + startTag({class: 'icon' + classList}) + endTag({}) + root.id + endTag(text);
+                innerTag += startTag(text, false, root.id) + startTag({tag: 'span', class: 'icon' + classList }) + endTag({ tag: 'span' }) + root.id + endTag(text);
                 if (children && children.length) {
                     innerTag += startTag(parent);
                     [].forEach.call(children, function(node) {

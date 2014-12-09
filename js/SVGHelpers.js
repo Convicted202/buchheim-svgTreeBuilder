@@ -1,6 +1,5 @@
 define(['Helper'], function(Helpers) {
 
-    // TODO: implement element entity
     'use strict'
 
     var svgNS = 'http://www.w3.org/2000/svg',
@@ -18,49 +17,20 @@ define(['Helper'], function(Helpers) {
       * @return void
     */
     SVGElement.prototype.addAttrs = function(attrs) {
-        if (typeof attrs != 'object') {
+        if (typeof attrs != 'object' || !attrs) {
             return;
         }
         for (var attr in attrs) {
             if (attr === 'id') {
                 this.id = attrs[attr];
             }
+            if (!attr) {
+                continue;
+            }
             this.node.setAttribute(attr.toString(), attrs[attr]);
         }
         return this;
     }
-
-    // SVGElement.prototype.addStyles = function(styles) {
-    //     if (typeof styles != 'object') {
-    //         return;
-    //     }
-    //     var completeStyle = this.node.getAttribute('style') || '';
-    //     for (var style in styles) {
-    //         completeStyle += style + ': ' + styles[style] + '; ';
-    //     }
-
-    //     this.node.setAttribute('style', completeStyle);
-    //     return this;
-    // }
-
-    // SVGElement.prototype.removeStyles = function(styles) {
-    //     if (typeof styles != 'object') {
-    //         return;
-    //     }
-    //     var completeStyle = (this.node.getAttribute('style') || '').split(';');
-
-    //     for (var style in styles) {
-    //         for (var i = 0, n = completeStyle.length; i < n; i++) {
-    //             if (completeStyle[i].match(style)) {
-    //                 completeStyle.pop(i);
-    //                 n--;
-    //             }
-    //         }
-    //     }
-
-    //     this.node.setAttribute('style', completeStyle.join(';'));
-    //     return this;
-    // }
 
     /**
       * @desc applies gradient to element by provided gradient ID
@@ -193,18 +163,37 @@ define(['Helper'], function(Helpers) {
       * @return void
     */
     SVG.prototype.defineLinearGradient = function(objExpose) {
-        var template = [
-                '<linearGradient id="${id}" spreadMethod="pad" gradientTransform="rotate(${rotationAngle})">',
-                    '<stop offset="${offset1}" stop-color="${stopColor1}"/>',
-                    '<stop offset="${offset2}" stop-color="${stopColor2}"/>',
-                '</linearGradient>'
-            ]
 
-        template = Helpers.template(template.join(''), objExpose);
+        function addStops(stopObj) {
+            var stop;
+            stop = new SVGElement(document.createElementNS(svgNS, 'stop'));
+            stop.addAttrs({
+                'offset': stopObj.offset,
+                'stop-color': stopObj.stopColor
+            });
+            this.node.appendChild(stop.node);
+        }
 
-        this.defs.innerHTML += template;
+        var gradient = new SVGElement(document.createElementNS(svgNS, 'linearGradient'));
+        gradient.addAttrs({
+            'spreadMethod': 'pad',
+            'id': objExpose.id || 'lg-default',
+            'gradientTransform': 'rotate(' + (objExpose.rotationAngle || 0) + ')'
+        });
+        gradient.addStops = addStops;
+
+        [].forEach.call(objExpose.stopNodes, function(stopNode) {
+            gradient.addStops(stopNode);
+        })
+
+        this.defs.appendChild(gradient.node);
     }
 
+    /**
+      * @desc returns SVGElement by given ID
+      * @param string id - given ID
+      * @return SVGElement
+    */
     SVG.prototype.getElementById = function(id) {
         var element = null;
         [].forEach.call(this.elementsCollection, function(elem) {
@@ -215,6 +204,11 @@ define(['Helper'], function(Helpers) {
         return element;
     }
 
+    /**
+      * @desc moves selection rectangle to contain provided element
+      * @param SVGElement/string elem - provided element
+      * @return void
+    */
     SVG.prototype.moveSelectionRect = function(elem) {
         var boxAttrs;
 

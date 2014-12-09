@@ -226,35 +226,9 @@ define(['Helper'], function(Helpers) {
         },
 
         draw: function(x, y, w, h, r, gradientId) {
-            // if (!this.surface) {
-            //     return false;
-            // }
-            // if (!this)
-            // if (!this.begX && !this.begY) {
-
-                //this.surface.circle(x, y, r).attr({id: this._id});
-                this.surface.roundRect(x, y, w, h, r, r).addAttrs({
-                    'id': this._id
-                }).applyGradient(gradientId);
-            //     return false;
-            // }
-            // if (!this.addToX) {
-            //     this.checkAddToY();
-            // }
-            // if (this.addToX + 1) {
-            //     if (this.y - this.begY < 0.001) {
-            //         return false;
-            //     }
-            //     this.currentX = (this.currentY - this.begY) * (this.x - this.begX) / (this.y - this.begY) + this.begX;
-            //     this.begX = this.currentX;
-            //     return true;
-            // } else {
-            //     if (this.x - this.begX < 0.001) {
-            //         return false;
-            //     }
-            //     this.currentY = (this.currentX - this.begX) * (this.y - this.begY) / (this.x - this.begX) + this.begY;
-            //     this.begY = this.currentY;
-            // }
+            this.surface.roundRect(x, y, w, h, r, r).addAttrs({
+                'id': this._id
+            }).applyGradient(gradientId);
         }
     }
 
