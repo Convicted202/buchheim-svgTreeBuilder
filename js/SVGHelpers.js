@@ -325,6 +325,7 @@ define(['Helper'], function(Helpers) {
             path.addAttrs({
                 'd': pathString,
                 'stroke-width': '1',
+                'shape-rendering': 'crispEdges',
                 'marker-end': addMarker ? 'url(#triangle)' : ''
             });
             this.node.appendChild(path.node);
@@ -380,7 +381,8 @@ define(['Helper'], function(Helpers) {
         cmd.push(x2 + ',' + (y1 + (y1 - y2) / 10));
         cmd.push(x2 + ',' + y2);
         path.addAttrs({
-            'd': cmd.join(' ')
+            'd': cmd.join(' '),
+            'fill': 'none'
         });
 
         path.svg = this.surface;

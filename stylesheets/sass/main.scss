@@ -584,10 +584,6 @@ html, body {
     user-select: none;
 }
 
-svg > * {
-    shape-rendering: crispEdges;
-}
-
 rect#selectionRect {
     &.hidden {
         display: none;
@@ -606,11 +602,11 @@ circle, rect:not(#selectionRect) {
 
 line {
     stroke: black;
-    shape-rendering: crispEdges;
+    //shape-rendering: crispEdges;
 }
 
 path {
     //fill: none;
     stroke: black;
-    shape-rendering: crispEdges;
+    //shape-rendering: crispEdges;
 }

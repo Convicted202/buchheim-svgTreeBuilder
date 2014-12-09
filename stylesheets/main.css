@@ -483,10 +483,6 @@ html, body {
   user-select: none;
 }
 
-svg > * {
-  shape-rendering: crispEdges;
-}
-
 rect#selectionRect.hidden {
   display: none;
 }
@@ -501,10 +497,8 @@ circle:hover, rect:not(#selectionRect):hover {
 
 line {
   stroke: black;
-  shape-rendering: crispEdges;
 }
 
 path {
   stroke: black;
-  shape-rendering: crispEdges;
 }
