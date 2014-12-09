@@ -45,8 +45,9 @@ html, body {
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
-    flex-direction: row;
+    -webkit-flex-direction: row;
     -ms-flex-direction: row;
+    flex-direction: row;
 }
 
 #leftbar {
@@ -324,8 +325,9 @@ html, body {
     -webkit-flex: 1 0 0px;
     -ms-flex: 1 0 0px;
     flex: 1 0 0px;
-    flex-direction: column;
+    -webkit-flex-direction: column;
     -ms-flex-direction: column;
+    flex-direction: column;
 }
 
 #righttopbar {
