@@ -263,6 +263,27 @@ html, body {
   order: 1;
   -ms-flex-order: 1;
 }
+#righttopbar .textNode {
+  position: absolute;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  word-wrap: break-word;
+  padding: 3px;
+  text-align: center;
+  cursor: pointer;
+}
+#righttopbar .textNode:after {
+  bottom: 1px;
+  left: 1px;
+  height: 30%;
+  width: 97%;
+  position: absolute;
+  content: "";
+  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 6px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #ffffff 70%);
+}
 
 #rightbottombar {
   height: 200px;
@@ -490,9 +511,6 @@ rect#selectionRect.hidden {
 circle, rect:not(#selectionRect) {
   stroke: black;
   cursor: pointer;
-}
-circle:hover, rect:not(#selectionRect):hover {
-  fill: #85b5c7;
 }
 
 line {

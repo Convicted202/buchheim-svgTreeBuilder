@@ -225,12 +225,17 @@ define(['Helper'], function(Helpers) {
             container.innerHTML = html;
         },
 
-        draw: function(x, y, w, h, r, gradientId) {
+        draw: function(x, y, w, h, r, scale, gradientId) {
             // this.surface.roundRect(x, y, w, h, r, r).addAttrs({
             //     'id': this._id
             // }).applyGradient(gradientId);
 
-            this.surface.group().addRect(0, 0, w, h, r, r).addText(this._id, w / 2, 10, w / 8).addAttrs({
+            // this.surface.group().addRect(0, 0, w, h, r, r).addText(this._id, w / 2, 10, w / 8, h, 20 * scale).addAttrs({
+            //     'id': this._id,
+            //     'transform': 'translate(' + x + ',' + y + ')'
+            // }).applyGradient(gradientId);
+
+            this.surface.group().addRect(0, 0, w, h, r, r).addText(this._id, x, y, w, h, 20 * scale).addAttrs({
                 'id': this._id,
                 'transform': 'translate(' + x + ',' + y + ')'
             }).applyGradient(gradientId);

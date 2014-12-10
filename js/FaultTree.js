@@ -204,8 +204,8 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
                 downFlag = false;
 
             var removeNode = function(e) {
-                if (e.target.nodeName === 'rect') {
-                    var id = e.target.id, el = null, pIds = [],
+                if (e.target.getAttribute('data-id')) {
+                    var id = e.target.getAttribute('data-id'), el = null, pIds = [],
                         container = $.one('#nodeDisplayContainer');
 
                     for (var i = 0; i < self.nodesCollection.length; i++) {
@@ -286,7 +286,7 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
                 }
             }
 
-            this.svgSurface.addEventListener('mousedown', removeNode);
+            this.svgSurface.surface.parentNode.addEventListener('mousedown', removeNode);
             this.svgSurface.addEventListener('wheel', onWheelScroll);
 
             this.svgSurface.addEventListener('mousedown', canvasDrag.mousedown);
@@ -611,6 +611,7 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
                             self.config.inputWidth * self.config.currentScale,
                             self.config.inputHeight * self.config.currentScale,
                             5,
+                            self.config.currentScale,
                             'LinearGradient1');
             });
 

@@ -337,6 +337,29 @@ html, body {
     flex: 1 0 auto;
     order: 1;
     -ms-flex-order: 1;
+
+    .textNode {
+        position: absolute;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-all;
+        word-wrap: break-word;
+        padding: 3px;
+        text-align: center;
+        cursor: pointer;
+
+        &:after {
+            bottom: 1px;
+            left: 1px;
+            height: 30%;
+            width: 97%;
+            position: absolute;
+            content: "";
+            border-bottom-right-radius: 6px;
+            border-bottom-left-radius: 6px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #FFF 70%);
+        }
+    }
 }
 
 #rightbottombar {
@@ -596,7 +619,7 @@ circle, rect:not(#selectionRect) {
     cursor: pointer;
 
     &:hover {
-        fill: rgb(133, 181, 199);
+        //fill: rgb(133, 181, 199);
     }
 }
 

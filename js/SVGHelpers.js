@@ -346,17 +346,41 @@ define(['Helper'], function(Helpers) {
         group.addRect = function (x, y, w, h, rx, ry) {
             self.roundRect.apply({
                 surface: this.node,
-                elementsCollection: self.elementsCollection
+                elementsCollection: this.elementsCollection || []
             }, arguments);
 
             return this;
         }
 
-        group.addText = function (baseText, x, y, maxChars, lineHeight) {
-            self.text.apply({
-                surface: this.node,
-                elementsCollection: self.elementsCollection
-            }, arguments);
+        group.addText = function (baseText, x, y, width, height, scale) {
+            var isExisting = document.querySelector('div[data-id="' + baseText + '"]'),
+                container = document.querySelector('#textNodes'),
+                textDiv = document.createElement('div'),
+                textNode = document.createTextNode(baseText),
+                baseStyle = [
+                    'font-size: ' + scale + 'px',
+                    'line-height: ' + scale + 'px',
+                    'left : ' + x + 'px',
+                    'top : ' + y + 'px',
+                    'width: ' + width + 'px',
+                    'height: ' + height + 'px;'
+                ].join('; ');
+
+            if (isExisting) {
+                isExisting.setAttribute('style', baseStyle);
+            } else {
+                textDiv.setAttribute('data-id', baseText)
+                textDiv.setAttribute('style', baseStyle);
+                textDiv.setAttribute('class', 'textNode');
+                textDiv.appendChild(textNode);
+                container.appendChild(textDiv);
+
+            }
+
+            // self.text.apply({
+            //     surface: this.node,
+            //     elementsCollection: this.elementsCollection || []
+            // }, arguments);
 
             return this;
         }
@@ -367,21 +391,23 @@ define(['Helper'], function(Helpers) {
         return group;
     }
 
-    SVG.prototype.text = function (baseText, x, y, maxChars, lineHeight) {
+    SVG.prototype.text = function (baseText, x, y, maxChars, maxHeight, fontSize) {
         var text = new SVGElement(document.createElementNS(svgNS, 'text')),
-            line = '', testline,
-            tspan, ttext, counter = 0;
+            line = '', testline, lineHeight,
+            tspan, ttext, counter = 0, maxCounter;
+
         text.addAttrs({
             'x': x,
             'y': y,
-            'font-size': '10',
+            'font-size': 10,
             'text-anchor': 'middle'
         });
 
         maxChars = maxChars || 10;
-        lineHeight = lineHeight || 10;
+        lineHeight = 10;
+        maxCounter = maxHeight ? maxHeight * 0.5 / lineHeight : 3;
 
-        for (var i = 0, n = baseText.length; i < n && counter < 3; i++) {
+        for (var i = 0, n = baseText.length; i < n && counter < maxCounter; i++) {
 
             testline = line + baseText[i];
             if (testline.length > maxChars)
@@ -391,7 +417,7 @@ define(['Helper'], function(Helpers) {
                     'x': x,
                     'y': y
                 });
-                if (counter === 2) {
+                if (counter + 1 === maxCounter) {
                     line += '...';
                 }
                 ttext = document.createTextNode(line);
