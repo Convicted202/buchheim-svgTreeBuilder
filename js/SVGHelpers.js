@@ -101,10 +101,28 @@ define(['Helper'], function(Helpers) {
                 'markerHeight': '8',
                 'orient': 'auto'
             });
-
+        this.arrowEndMarker.originalVals = {
+            width: 8,
+            height: 8
+        }
         this.arrowEndMarker.node.appendChild(trianglePath.node);
 
         this.markerUsed = false;
+    }
+
+    SVG.prototype.scaleMarker = function(scale) {
+        if (!this.arrowEndMarker) {
+            return;
+        }
+        var vals = this.arrowEndMarker.originalVals;
+        this.arrowEndMarker.addAttrs({
+            'markerWidth': vals.width * scale,
+            'markerHeight': vals.height * scale
+        });
+    }
+
+    SVG.prototype.getMarkerHeight = function() {
+        return this.arrowEndMarker && this.arrowEndMarker.originalVals.height || 0;
     }
 
     /**

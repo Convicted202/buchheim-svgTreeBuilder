@@ -37,7 +37,7 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
              inputHeight: 70,
              inputWidth: 90,
 
-             currentScale: 0.5,
+             currentScale: 1,
              offsetX: 0,
              offsetY: 0
         }
@@ -251,8 +251,13 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
                 if (self.config.currentScale <= 1 && delta < 0) {
                     self.config.currentScale /= 2;
                 } else {
-                    self.config.currentScale += delta;
+                    if (self.config.currentScale < 1 && delta >= 0) {
+                        self.config.currentScale *= 2;
+                    } else {
+                        self.config.currentScale += delta;
+                    }
                 }
+                self.svgSurface.scaleMarker(self.config.currentScale);
                 self.drawAllNodes();
             }
 
@@ -597,7 +602,8 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
         */
         drawAllNodes: function() {
             var self = this,
-                path, cmd = [];
+                path, cmd = [],
+                markerHeight = this.svgSurface.getMarkerHeight();
 
             self.svgSurface.clearSurface();
 
@@ -643,7 +649,7 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
                         } else if (conType === ConnectionType.POLYGONAL) {
                             group.addPath([
                                 'M' + nodeCenter.x + ',' + (rootBottomCenterY + self.config.inputHeight * self.config.currentScale / 2),
-                                'L' + nodeCenter.x + ',' + (rootBottomCenterY + self.config.inputHeight * self.config.currentScale - 8)
+                                'L' + nodeCenter.x + ',' + (rootBottomCenterY + self.config.inputHeight * self.config.currentScale - markerHeight * self.config.currentScale)
                             ].join(' '), true);
                         }
 
