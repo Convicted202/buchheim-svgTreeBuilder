@@ -8,12 +8,12 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
         POLYGONAL: 2
     }
 
-    var FaultTree = function(surface, configs) {
+    var FaultTree = function(surface, textContainer, configs) {
         this.jsonTree = {};
 
         this.jsonList = {};
         this.nodesCollection = [];
-        this.svgSurface = new SVG(surface);
+        this.svgSurface = new SVG(surface, textContainer);
 
         this.svgSurface.defineLinearGradient({
             id: 'LinearGradient1',
@@ -57,6 +57,7 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
             if (!data) {
                 data = Helpers.generateJson(5, 2);
             }
+            this.svgSurface.clearSurface();
             this.jsonTree = data;
             this.jsonList = Helpers.extend({}, data);
             this.treeLayout();
@@ -301,6 +302,19 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
             this.svgSurface.addEventListener('touchstart', canvasDrag.mousedown);
             this.svgSurface.addEventListener('touchmove', canvasDrag.mousemove);
             this.svgSurface.addEventListener('touchend', canvasDrag.mouseup);
+
+            this.removeListeners = function() {
+                this.svgSurface.surface.parentNode.removeEventListener('mousedown', removeNode);
+                this.svgSurface.removeEventListener('wheel', onWheelScroll);
+
+                this.svgSurface.removeEventListener('mousedown', canvasDrag.mousedown);
+                this.svgSurface.removeEventListener('mousemove', canvasDrag.mousemove);
+                this.svgSurface.removeEventListener('mouseup', canvasDrag.mouseup);
+
+                this.svgSurface.removeEventListener('touchstart', canvasDrag.mousedown);
+                this.svgSurface.removeEventListener('touchmove', canvasDrag.mousemove);
+                this.svgSurface.removeEventListener('touchend', canvasDrag.mouseup);
+            }
         },
 
         /**

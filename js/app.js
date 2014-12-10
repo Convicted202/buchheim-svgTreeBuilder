@@ -4,20 +4,26 @@ require(['FaultTree', 'defaults', 'ElementsEnhancement', 'Animator'], function(F
 
     var data = defaultData[3],
         treeListContainer = $.one('#treeContainer'),
-        tree = new FaultTree($.one('#surface'));
+        tree = new FaultTree($.one('#surface'), $.one('#textNodes'));
 
-    tree.init(data);
-    treeListContainer.innerHTML =
-        tree.generateTreeList(
-            { tag: 'ul', class: 'parent' },
-            { tag: 'li', class: 'child' },
-            { tag: 'span', class: 'displayInfo' }
-        );
+    initTree(data);
     closeHandlersInit();
     resizersInit();
-    initExpandibility();
     higlightNodesBySearch();
+    initUpload();
 
+    function initTree(data) {
+        tree.removeListeners && tree.removeListeners();
+        tree.init(data);
+        treeListContainer.innerHTML =
+            tree.generateTreeList(
+                { tag: 'ul', class: 'parent' },
+                { tag: 'li', class: 'child' },
+                { tag: 'span', class: 'displayInfo' },
+                true
+            );
+        initExpandibility();
+    }
 
     function closeHandlersInit() {
         var leftbar = $.one('#leftbar'),
@@ -170,5 +176,37 @@ require(['FaultTree', 'defaults', 'ElementsEnhancement', 'Animator'], function(F
 
         Animator.animate(renderStep);
 
+    }
+
+    function initUpload() {
+        var uploadBtn = $.one('#upload');
+
+        function handleFileSelect(evt) {
+            var files = evt.target.files; // FileList object
+
+            // Loop through the FileList and render image files as thumbnails.
+            for (var i = 0, f; f = files[i]; i++) {
+
+                // Only process image files.
+                if (!f.name.match('.json')) {
+                    continue;
+                }
+
+                var reader = new FileReader();
+
+                // Closure to capture the file information.
+                reader.onload = (function(theFile) {
+                    return function(e) {
+                        var jsonStr =  e.target.result;
+                        initTree(JSON.parse(jsonStr));
+                    };
+                })(f);
+
+                // Read in the image file as a data URL.
+                reader.readAsText(f);
+            }
+        }
+
+        uploadBtn.addEventListener('change', handleFileSelect, false);
     }
 });

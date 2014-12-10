@@ -70,7 +70,7 @@ define(['Helper'], function(Helpers) {
         this.node.classList.add('hidden');
     }
 
-    var SVG = function (surfaceElem) {
+    var SVG = function (surfaceElem, textContainer) {
         var defs, trianglePath;
 
         trianglePath = new SVGElement(document.createElementNS(svgNS, 'path')).
@@ -87,6 +87,7 @@ define(['Helper'], function(Helpers) {
             defs = document.createElementNS(svgNS, 'defs');
             this.surface.appendChild(defs);
         }
+        this.textContainer = textContainer;
         this.defs = this.surface.querySelector('defs');
         this.elementsCollection = [];
 
@@ -159,6 +160,14 @@ define(['Helper'], function(Helpers) {
             if (node.tagName != "defs") {
                 node.parentNode.removeChild(node);
             }
+            node = next;
+        }
+
+        node = this.textContainer.firstChild;
+
+        while (node) {
+            next = node.nextSibling;
+            node.parentNode.removeChild(node);
             node = next;
         }
 
@@ -372,7 +381,7 @@ define(['Helper'], function(Helpers) {
 
         group.addText = function (baseText, x, y, width, height, scale) {
             var isExisting = document.querySelector('div[data-id="' + baseText + '"]'),
-                container = document.querySelector('#textNodes'),
+                //container = document.querySelector('#textNodes'),
                 textDiv = document.createElement('div'),
                 textNode = document.createTextNode(baseText),
                 baseStyle = [
@@ -391,7 +400,7 @@ define(['Helper'], function(Helpers) {
                 textDiv.setAttribute('style', baseStyle);
                 textDiv.setAttribute('class', 'textNode');
                 textDiv.appendChild(textNode);
-                container.appendChild(textDiv);
+                self.textContainer.appendChild(textDiv);
 
             }
 
