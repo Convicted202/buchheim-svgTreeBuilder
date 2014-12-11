@@ -52,10 +52,11 @@ define(['Helper'], function(Helpers) {
     SVGElement.prototype.getBoundingRect = function() {
         var box = this.node.getBoundingClientRect(),
             width = box.right - box.left,
-            height = box.bottom - box.top;
+            height = box.bottom - box.top,
+            xOffs = document.querySelector('#leftbar').getNumericStyle('width');
 
         return {
-            x: box.left - width / 4,
+            x: box.left - xOffs - width / 4,
             y: box.top - height / 4,
             width: width * 1.5,
             height: height * 1.5

@@ -339,6 +339,12 @@ html, body {
     -ms-flex-order: 1;
     position: relative;
 
+    // #textNodes {
+    //     position: absolute;
+    //     height: 100%;
+    //     width: 100%;
+    // }
+
     .textNode {
         position: absolute;
         overflow: hidden;
