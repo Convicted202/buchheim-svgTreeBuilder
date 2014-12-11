@@ -31,7 +31,7 @@ define(['Helper', 'Animator', 'TreeNode', 'SVGHelpers', 'ElementsEnhancement'], 
         this.config = {
              siblingSeparation : 40,
              treeTop: 80,
-             treeLeft: document.body.clientWidth - surface.parentNode.clientWidth / 2,
+             treeLeft: surface.parentNode.clientWidth / 2,
              logicInputRadius: 50,
              r: 10,
              inputHeight: 70,

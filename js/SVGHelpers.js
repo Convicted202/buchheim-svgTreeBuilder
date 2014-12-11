@@ -363,7 +363,7 @@ define(['Helper'], function(Helpers) {
             groupAddElement(this, 'path', {
                 'd': pathString,
                 'stroke-width': '1',
-                'shape-rendering': 'crispEdges',
+                //'shape-rendering': 'crispEdges',
                 'marker-end': addMarker ? 'url(#triangle)' : ''
             })
 

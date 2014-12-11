@@ -337,6 +337,7 @@ html, body {
     flex: 1 0 auto;
     order: 1;
     -ms-flex-order: 1;
+    position: relative;
 
     .textNode {
         position: absolute;
