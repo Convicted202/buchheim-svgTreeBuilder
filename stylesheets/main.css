@@ -1,43 +1,36 @@
 @font-face {
   font-family: 'icomoon';
-  src: url("../fonts/icomoon.eot?-xtk5z3");
-  src: url("../fonts/icomoon.eot?#iefix-xtk5z3") format("embedded-opentype"), url("../fonts/icomoon.woff?-xtk5z3") format("woff"), url("../fonts/icomoon.ttf?-xtk5z3") format("truetype"), url("../fonts/icomoon.svg?-xtk5z3#icomoon") format("svg");
+  src: url('../fonts/icomoon.eot?-xtk5z3');
+  src: url('../fonts/icomoon.eot?#iefix-xtk5z3') format('embedded-opentype'), url('../fonts/icomoon.woff?-xtk5z3') format('woff'), url('../fonts/icomoon.ttf?-xtk5z3') format('truetype'), url('../fonts/icomoon.svg?-xtk5z3#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
-
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
-
 ::-webkit-scrollbar-thumb {
   -webkit-border-radius: 3px;
   border-radius: 3px;
   background: #838383;
 }
-
 ::-webkit-scrollbar-track {
   -webkit-border-radius: 2px;
   border-radius: 2px;
 }
-
 ::-webkit-scrollbar-corner {
   background: #e2e2e2;
 }
-
 * {
   box-sizing: border-box;
   font-family: Arial;
 }
-
 html, body {
   width: 100%;
   height: 100%;
   margin: 0;
   overflow: hidden;
 }
-
 #container {
   width: 100%;
   height: 100%;
@@ -47,8 +40,8 @@ html, body {
   -webkit-flex-direction: row;
   -ms-flex-direction: row;
   flex-direction: row;
+  align-items: flex-end;
 }
-
 #leftbar {
   width: 400px;
   height: 100%;
@@ -64,21 +57,21 @@ html, body {
   padding-right: 0;
 }
 #leftbar input {
-  background: linear-gradient(to bottom, #f7f7f8 0%, #ffffff 100%);
+  background: linear-gradient(to bottom, #f7f7f8 0%, #fff 100%);
   border-radius: 3px;
   border: none;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) inset, 0 -1px 0 rgba(0, 0, 0, 0.05) inset;
   transition: all 0.2s linear;
   font-family: "Helvetica Neue", sans-serif;
   font-size: 13px;
-  color: #222222;
+  color: #222;
   position: relative;
   height: 36px;
   width: 300px;
   padding-left: 20px;
 }
 #leftbar input::-webkit-input-placeholder, #leftbar input:-moz-placeholder {
-  color: #999999;
+  color: #999;
 }
 #leftbar input:focus {
   box-shadow: 0 1px 0 #3d7d99 inset, 0 -1px 0 #3d7d99 inset, 1px 0 0 #3d7d99 inset, -1px 0 0 #3d7d99 inset, 0 0 4px rgba(35, 146, 243, 0.5);
@@ -88,7 +81,7 @@ html, body {
   position: relative;
   height: 90px;
   padding: 20px 20px 20px 10px;
-  border-bottom: solid 1px #AAA;
+  border-bottom: solid 1px #aaa;
   background: #c3c8cc;
 }
 #leftbar #searchContainer #searchField {
@@ -98,7 +91,7 @@ html, body {
   height: 100%;
   border-radius: 5px;
   border: none;
-  text-shadow: 0px 1px 0px #9CBAC5;
+  text-shadow: 0px 1px 0px #9cbac5;
   font-size: 18px;
   color: #3d7d99;
   background: #e5e5e5;
@@ -121,7 +114,7 @@ html, body {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 6px;
   transition: color 0.15s;
-  /* Better Font Rendering =========== */
+ /* Better Font Rendering =========== */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -208,7 +201,7 @@ html, body {
   vertical-align: top;
 }
 #leftbar #treeList #treeContainer .displayInfo.highlighted {
-  background-color: #E74C3C;
+  background-color: #e74c3c;
 }
 #leftbar #treeList #treeContainer .displayInfo:hover {
   background-color: #85b5c7;
@@ -229,7 +222,7 @@ html, body {
   text-transform: none;
   line-height: 1;
   color: #3d7d99;
-  /* Better Font Rendering =========== */
+ /* Better Font Rendering =========== */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -242,9 +235,10 @@ html, body {
 #leftbar #treeList #treeContainer .displayInfo .icon.expandible.collapsed:before {
   content: "\e605";
 }
-
 #rightbar {
   height: 100%;
+  width: 100%;
+  position: absolute;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -255,7 +249,6 @@ html, body {
   -ms-flex-direction: column;
   flex-direction: column;
 }
-
 #righttopbar {
   -webkit-flex: 1 0 auto;
   -ms-flex: 1 0 auto;
@@ -283,7 +276,7 @@ html, body {
   content: "";
   border-bottom-right-radius: 6px;
   border-bottom-left-radius: 6px;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #ffffff 70%);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fff 70%);
 }
 #righttopbar #loadFile {
   right: 0;
@@ -297,8 +290,8 @@ html, body {
   border-radius: 4px;
   color: #fff;
   font-weight: bold;
-  background-color: #16A085;
-  border-color: #1ABC9C;
+  background-color: #16a085;
+  border-color: #1abc9c;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -317,7 +310,6 @@ html, body {
   cursor: pointer;
   opacity: 0;
 }
-
 #rightbottombar {
   height: 200px;
   position: relative;
@@ -325,22 +317,20 @@ html, body {
   order: 2;
   -ms-flex-order: 2;
   -webkit-flex: 0 0 auto;
-  -ms-flex: 0 0 auto;
-  flex: 0 0 auto;
+  flex: 1;
+  z-index: 1;
 }
-
 .closeButton {
   z-index: 1;
   display: block;
-  background-color: #85B5C7;
+  background-color: #85b5c7;
   position: absolute;
   transition: 1s;
   cursor: pointer;
 }
 .closeButton:hover {
-  background-color: #8CCDE5;
+  background-color: #8ccde5;
 }
-
 #hideLeft {
   height: 50px;
   width: 30px;
@@ -348,7 +338,7 @@ html, body {
   border-top: 1px #9f9f9f solid;
   border-right: 1px #9f9f9f solid;
   border-bottom: 1px #9f9f9f solid;
-  border-left: 1px #DDDCDC solid;
+  border-left: 1px #dddcdc solid;
   border-top-right-radius: 6px;
   border-bottom-right-radius: 6px;
   top: 40%;
@@ -358,7 +348,7 @@ html, body {
   position: absolute;
   left: 30%;
   width: 40%;
-  background-color: #3D7D99;
+  background-color: #3d7d99;
   transition: 1s;
 }
 #hideLeft:before {
@@ -379,7 +369,6 @@ html, body {
   -o-transform: skew(30deg, 0deg);
   transform: skew(30deg, 0deg);
 }
-
 .shrinkedHorizontal #hideLeft:before {
   -webkit-transform: skew(30deg, 0deg);
   -moz-transform: skew(30deg, 0deg);
@@ -394,13 +383,12 @@ html, body {
   -o-transform: skew(-30deg, 0deg);
   transform: skew(-30deg, 0deg);
 }
-
 #hideBottom {
   height: 30px;
   width: 50px;
   border-top: 1px #9f9f9f solid;
   border-right: 1px #9f9f9f solid;
-  border-bottom: 1px #DDDCDC solid;
+  border-bottom: 1px #dddcdc solid;
   border-left: 1px #9f9f9f solid;
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
@@ -412,7 +400,7 @@ html, body {
   position: absolute;
   top: 30%;
   height: 40%;
-  background-color: #3D7D99;
+  background-color: #3d7d99;
   transition: 1s;
 }
 #hideBottom:before {
@@ -433,7 +421,6 @@ html, body {
   -o-transform: skew(0deg, -30deg);
   transform: skew(0deg, -30deg);
 }
-
 .shrinkedVertical #hideBottom:before {
   -webkit-transform: skew(0deg, -30deg);
   -moz-transform: skew(0deg, -30deg);
@@ -448,25 +435,21 @@ html, body {
   -o-transform: skew(0deg, 30deg);
   transform: skew(0deg, 30deg);
 }
-
 .fasttransition {
   transition: 0.5s;
 }
-
 .shrinkedHorizontal {
   width: 0 !important;
 }
-
 .shrinkedVertical {
   height: 0 !important;
 }
-
 .resizer {
   position: absolute;
   z-index: 1;
   display: block;
-  background-color: #B6B6B6;
-  border: 1px #EFEFEF solid;
+  background-color: #b6b6b6;
+  border: 1px #efefef solid;
 }
 .resizer.vertical {
   height: 100%;
@@ -480,11 +463,9 @@ html, body {
   top: 0;
   cursor: n-resize;
 }
-
 .shrinkedVertical .resizer, .shrinkedHorizontal .resizer {
   display: none;
 }
-
 #surface {
   width: 100%;
   height: 100%;
@@ -496,9 +477,8 @@ html, body {
   cursor: -webkit-grab;
   background: url(grid.gif);
   background-color: #efefef;
-  background-color: #F7F7F7;
+  background-color: #f7f7f7;
 }
-
 #bottomleftbar {
   width: 48%;
   height: 100%;
@@ -507,7 +487,6 @@ html, body {
   vertical-align: top;
   float: left;
 }
-
 #bottomrightbar {
   width: 48%;
   height: 100%;
@@ -516,7 +495,6 @@ html, body {
   vertical-align: top;
   float: right;
 }
-
 .innerContainer {
   height: 100%;
   width: 100%;
@@ -527,7 +505,6 @@ html, body {
   word-wrap: break-word;
   word-break: break-all;
 }
-
 .noselect {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -536,24 +513,19 @@ html, body {
   -ms-user-select: none;
   user-select: none;
 }
-
 rect#selectionRect.hidden {
   display: none;
 }
-
 circle, rect:not(#selectionRect) {
   stroke: black;
   cursor: pointer;
 }
-
 line {
   stroke: black;
 }
-
 path {
   stroke: black;
 }
-
 text {
   stroke: #000;
 }
