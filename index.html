@@ -1,46 +1,46 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Fault Tree</title>
-    <link rel="stylesheet" type="text/css" href="stylesheets/main.css"/>
-</head>
-<body>
-<div id="container">
-    <div id="leftbar" class="fasttransition noselect">
+    <link rel="stylesheet" type="text/css" href="stylesheets/main.css" />
+  </head>
+  <body>
+    <div id="container">
+      <div id="leftbar" class="fasttransition noselect">
         <div id="resizerV" class="resizer vertical"></div>
         <div id="hideLeft" class="closeButton"></div>
         <div id="searchContainer">
-            <input id="searchField" placeholder="Search Node" type="text" />
-            <span id="clearQuery"></span>
+          <input id="searchField" placeholder="Search Node" type="text" />
+          <span id="clearQuery"></span>
         </div>
         <div id="treeList">
-            <div id="treeContainer"></div>
+          <div id="treeContainer"></div>
         </div>
-    </div>
-    <div id="rightbar">
+      </div>
+      <div id="rightbar">
         <div id="righttopbar">
-            <svg id="surface"></svg>
-            <div id="textNodes"></div>
-            <div id="loadFile">
-                <span>Upload</span>
-                <input type="file" id="upload" />
-            </div>
+          <svg id="surface"></svg>
+          <div id="textNodes"></div>
+          <div id="loadFile">
+            <span>Upload</span>
+            <input type="file" id="upload" />
+          </div>
         </div>
-        <div id="rightbottombar" class="fasttransition">
-            <div id="resizerH" class="resizer horizontal"></div>
-            <div id="hideBottom" class="closeButton"></div>
-            <div id="bottomleftbar">
-                <div id="treeDisplayContainer" class="innerContainer"></div>
-            </div>
-            <div id="bottomrightbar">
-                <div id="nodeDisplayContainer" class="innerContainer">
-                    <em>Select node to see more info</em>
-                </div>
-            </div>
+      </div>
+      <div id="rightbottombar" class="fasttransition">
+        <div id="resizerH" class="resizer horizontal"></div>
+        <div id="hideBottom" class="closeButton"></div>
+        <div id="bottomleftbar">
+          <div id="treeDisplayContainer" class="innerContainer"></div>
         </div>
+        <div id="bottomrightbar">
+          <div id="nodeDisplayContainer" class="innerContainer">
+            <em>Select node to see more info</em>
+          </div>
+        </div>
+      </div>
     </div>
-</div>
     <script src="js/vendor/require.config.js"></script>
     <script data-main="app.js" src="js/vendor/require.js"></script>
-</body>
+  </body>
 </html>
